@@ -3,6 +3,9 @@
 {% block title %}
   {{ curso.titulo }} · Aprenda+
 {% endblock %}
+{% block body_class %}
+  course-detail-page
+{% endblock %}
 {% block content %}
   <a class="back" href="{% url 'cursos:catalogo' %}">← Explorar cursos</a>
   <div class="course-detail-grid">
@@ -21,13 +24,18 @@
           {{ curso.descricao|linebreaks }}
         </div>
       </header>
-      <section class="syllabus" aria-labelledby="conteudo-curso">
+      <section id="programa-curso" class="syllabus" aria-labelledby="conteudo-curso">
         <div class="section-heading">
           <h2 id="conteudo-curso">
             O que você vai estudar
           </h2>
           <span class="muted">{{ modulos|length }} módulo{{ modulos|length|pluralize }}</span>
         </div>
+        {% if modulos|length > 1 %}
+          <button type="button" class="expand-modules" data-expand-modules="programa-curso" aria-expanded="false" hidden>
+            Abrir todos os módulos <span aria-hidden="true">+</span>
+          </button>
+        {% endif %}
         {% for modulo in modulos %}
           <details class="module-accordion" {% if forloop.first %}open{% endif %}>
             <summary>
@@ -79,5 +87,27 @@
         {% endif %}
       </div>
     </aside>
+  </div>
+  <div class="mobile-purchase-bar">
+    <div>
+      <small>
+      {% if matricula %}
+        SEU CURSO
+      {% else %}
+        PAGAMENTO ÚNICO
+      {% endif %}
+      </small><strong>
+      {% if matricula %}
+        Já é seu
+      {% else %}
+        R$ {{ curso.preco|floatformat:2 }}
+      {% endif %}
+      </strong>
+    </div>
+    {% if matricula %}
+      <a class="button" href="{% url 'aprendizagem:curso' matricula.pk %}">Acessar aulas →</a>
+    {% else %}
+      <a class="button" href="{% url 'compras:checkout' curso.pk %}">Começar curso →</a>
+    {% endif %}
   </div>
 {% endblock %}

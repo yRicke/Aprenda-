@@ -21,8 +21,21 @@ def catalogo(request):
     cursos = Curso.objects.filter(publicado=True).select_related('instrutor').annotate(
         quantidade_aulas=Count('modulos__aulas', distinct=True),
         quantidade_modulos=Count('modulos', distinct=True),
-    )
+    ).prefetch_related('modulos__aulas')
+    destaque = cursos.first()
     busca = request.GET.get('q', '').strip()
+    formato = request.GET.get('formato', '')
+    preco = request.GET.get('preco', '')
+    if formato not in Aula.Tipo.values:
+        formato = ''
+    if preco not in ('gratis', 'pagos'):
+        preco = ''
+    if formato:
+        cursos = cursos.filter(modulos__aulas__tipo=formato)
+    if preco == 'gratis':
+        cursos = cursos.filter(preco=0)
+    elif preco == 'pagos':
+        cursos = cursos.filter(preco__gt=0)
     ordenacao = request.GET.get('ordenar', 'recentes')
     ordenacoes = {'recentes': '-criado_em', 'menor_preco': 'preco', 'maior_preco': '-preco'}
     if ordenacao not in ordenacoes:
@@ -32,6 +45,8 @@ def catalogo(request):
         cursos = cursos.filter(Q(titulo__icontains=busca) | Q(descricao__icontains=busca))
     return render(request, 'cursos/catalogo.html', {
         'cursos': cursos, 'busca': busca, 'ordenacao': ordenacao,
+        'formato': formato, 'preco': preco, 'curso_destaque': destaque,
+        'mostrar_hero': not (busca or formato or preco),
     })
 
 

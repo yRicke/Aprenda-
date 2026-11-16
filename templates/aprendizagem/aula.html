@@ -6,12 +6,29 @@
   learning-page
 {% endblock %}
 {% block content %}
-  <a class="back" href="{% url 'aprendizagem:curso' matricula.pk %}">← {{ matricula.compra.curso.titulo }}</a>
+  <div class="classroom-topbar">
+    <a class="back" href="{% url 'aprendizagem:curso' matricula.pk %}">← {{ matricula.compra.curso.titulo }}</a>
+    <div class="classroom-tools" data-classroom-tools hidden>
+      {% if aula.tipo == 'texto' %}
+        <div class="reading-controls" aria-label="Tamanho do texto">
+          <button type="button" data-reading-adjust="-1" aria-label="Diminuir tamanho do texto" aria-controls="texto-aula">
+            A−
+          </button>
+          <button type="button" data-reading-adjust="1" aria-label="Aumentar tamanho do texto" aria-controls="texto-aula">
+            A+
+          </button>
+        </div>
+      {% endif %}
+      <button type="button" class="focus-toggle" data-focus-toggle aria-pressed="false">
+        <span class="focus-symbol" aria-hidden="true"></span><span data-focus-label>Modo foco</span>
+      </button>
+    </div>
+  </div>
   <div class="classroom">
     <article class="lesson">
       <header class="lesson-heading">
         <p class="eyebrow">
-          {{ aula.modulo.titulo }} · {{ aula.get_tipo_display }}
+          AULA {{ numero_aula }} DE {{ aulas|length }} · {{ aula.get_tipo_display }}
         </p>
         <h1>
           {{ aula.titulo }}
@@ -39,7 +56,7 @@
         </p>
       {% endif %}
       {% if aula.tipo == 'texto' %}
-        <div class="prose lesson-text">
+        <div id="texto-aula" class="prose lesson-text">
           {{ conteudo.texto|linebreaks }}
         </div>
       {% endif %}
@@ -85,8 +102,13 @@
           {% if not concluida %}
             <form method="post">
               {% csrf_token %}
-              <button>
-                Marcar aula como concluída <span aria-hidden="true">✓</span>
+              <button name="continuar" value="1">
+                {% if proxima %}
+                  Concluir e continuar
+                {% else %}
+                  Concluir aula
+                {% endif %}
+                <span aria-hidden="true">✓</span>
               </button>
             </form>
           {% else %}
@@ -94,6 +116,18 @@
           {% endif %}
         </div>
       {% endif %}
+      <nav class="lesson-pagination" aria-label="Navegação entre aulas">
+        {% if anterior %}
+          <a href="{% url 'aprendizagem:aula' matricula.pk anterior.pk %}"><span aria-hidden="true">←</span><span><small>AULA ANTERIOR</small>{{ anterior.titulo }}</span></a>
+        {% else %}
+          <span></span>
+        {% endif %}
+        {% if proxima %}
+          <a href="{% url 'aprendizagem:aula' matricula.pk proxima.pk %}" class="next-lesson"><span><small>PRÓXIMA AULA</small>{{ proxima.titulo }}</span><span aria-hidden="true">→</span></a>
+        {% else %}
+          <a href="{% url 'aprendizagem:curso' matricula.pk %}" class="next-lesson"><span><small>FIM DO CONTEÚDO</small>Visão geral do curso</span><span aria-hidden="true">↗</span></a>
+        {% endif %}
+      </nav>
     </article>
     <aside class="classroom-sidebar">
       <div class="sidebar-heading">

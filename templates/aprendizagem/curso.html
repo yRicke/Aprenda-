@@ -14,6 +14,9 @@
     <p>
       Por {{ matricula.compra.curso.instrutor.nome }}
     </p>
+    {% if aula_retomada %}
+      <a class="button study-resume-button" href="{% url 'aprendizagem:aula' matricula.pk aula_retomada.pk %}">Continuar de onde parei <span aria-hidden="true">→</span></a>
+    {% endif %}
   </header>
   <div class="two-columns study-overview">
     <section class="syllabus" aria-labelledby="suas-aulas">

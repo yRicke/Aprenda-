@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
-{% load cursos_ui %}
+{% load static cursos_ui %}
 {% block title %}
   Meus estudos · Aprenda+
+{% endblock %}
+{% block body_class %}
+  dashboard-page
 {% endblock %}
 {% block content %}
   <header class="page-heading dashboard-heading">
@@ -10,66 +13,208 @@
         SEU ESPAÇO DE APRENDIZADO
       </p>
       <h1>
-        Meus estudos<span class="heading-dot">.</span>
+        Um pouco mais longe,<br><em>a cada aula.</em>
       </h1>
       <p class="muted">
         Bom te ver por aqui, {{ user.first_name|default:user.username }}.
       </p>
     </div>
-    <a class="text-link" href="{% url 'cursos:catalogo' %}">Explorar outros cursos <span aria-hidden="true">↗</span></a>
+    <a class="text-link" href="{% url 'cursos:catalogo' %}">Descobrir outro curso <span aria-hidden="true">↗</span></a>
   </header>
-  <div class="section-tabs">
-    <span aria-current="page">Minha aprendizagem <span class="tab-count">{{ matriculas|length }}</span></span>
-  </div>
-  <div class="course-grid study-grid">
-    {% for matricula in matriculas %}
-      <article class="course-card study-card">
-        <a class="course-cover" href="{% url 'aprendizagem:curso' matricula.pk %}" tabindex="-1" aria-hidden="true"><img src="{{ matricula.compra.curso|capa_curso }}" alt="" width="900" height="600" loading="lazy"></a>
-        <div class="course-card-body">
-          <p class="study-status {% if matricula.concluida_em %}complete{% endif %}">
-            {% if matricula.concluida_em %}
-              ✓ Curso concluído
+  {% if total_matriculas %}
+    <div class="learning-summary" data-reveal>
+      {% if retomada %}
+        <section class="resume-card" aria-labelledby="retomar-titulo">
+          <img src="{{ retomada.compra.curso|capa_curso }}" alt="" width="500" height="500">
+          <div class="resume-content">
+            <p class="eyebrow">
+              {% if aula_retomada %}
+                VAMOS CONTINUAR?
+              {% else %}
+                VOCÊ CHEGOU ATÉ AQUI
+              {% endif %}
+            </p>
+            <h2 id="retomar-titulo">
+              {{ retomada.compra.curso.titulo }}
+            </h2>
+            {% if aula_retomada %}
+              <p class="resume-next">
+                Sua próxima aula <span>{{ aula_retomada.titulo }}</span>
+              </p>
+              <a class="button" href="{% url 'aprendizagem:aula' retomada.pk aula_retomada.pk %}">Continuar estudando <span aria-hidden="true">→</span></a>
             {% else %}
-              Em andamento
+              <p class="resume-next">
+                Todas as aulas concluídas.<span>Agora é hora do seu certificado.</span>
+              </p>
+              <form method="post" action="{% url 'aprendizagem:concluir' retomada.pk %}">
+                {% csrf_token %}
+                <button>
+                  Emitir meu certificado <span aria-hidden="true">↗</span>
+                </button>
+              </form>
             {% endif %}
-          </p>
+          </div>
+          <div class="resume-progress">
+            <span>{{ retomada.progresso }}%</span>
+            <progress aria-label="Progresso de {{ retomada.compra.curso.titulo }}" value="{{ retomada.progresso }}" max="100">
+              {{ retomada.progresso }}%
+            </progress>
+          </div>
+        </section>
+      {% else %}
+        <section class="resume-card completed-resume">
+          <div class="resume-content">
+            <p class="eyebrow">
+              APRENDIZADO QUE FICA
+            </p>
+            <h2>
+              {{ total_concluidos }} curso{{ total_concluidos|pluralize }}.<br>Muita coisa pra levar adiante.
+            </h2>
+            <p>
+              Seus certificados estão nos cursos concluídos. Quando quiser, tem um próximo começo no catálogo.
+            </p>
+            <a class="button" href="{% url 'cursos:catalogo' %}">Explorar cursos ↗</a>
+          </div>
+        </section>
+      {% endif %}
+      <aside class="activity-card">
+        <div class="activity-heading">
           <h2>
-            <a href="{% url 'aprendizagem:curso' matricula.pk %}">{{ matricula.compra.curso.titulo }}</a>
+            Sua semana
           </h2>
-          <p class="course-teacher">
-            Por {{ matricula.compra.curso.instrutor.nome }}
-          </p>
-          <div class="progress-label">
-            <label for="progresso-{{ matricula.pk }}">Seu progresso</label><strong>{{ matricula.progresso }}%</strong>
-          </div>
-          <progress id="progresso-{{ matricula.pk }}" value="{{ matricula.progresso }}" max="100">
-            {{ matricula.progresso }}%
-          </progress>
-          <div class="card-bottom">
-            <a class="button secondary" href="{% url 'aprendizagem:curso' matricula.pk %}">
-            {% if matricula.concluida_em %}
-              Revisitar curso
-            {% else %}
-              Continuar estudando
-            {% endif %}
-            <span aria-hidden="true">→</span></a>
-            {% if matricula.concluida_em %}
-              <a class="text-link" href="{% url 'aprendizagem:certificado' matricula.certificado.codigo %}">Certificado ↗</a>
-            {% endif %}
-          </div>
         </div>
-      </article>
-    {% empty %}
-      <section class="empty-state study-empty">
-        <span class="empty-symbol" aria-hidden="true">↗</span>
-        <h2>
-          Que tal começar um curso?
-        </h2>
-        <p>
-          Suas aulas, seu progresso e seus certificados ficam todos aqui.
+        <p class="activity-total">
+          <strong>{{ aulas_semana }}</strong><span>aula{{ aulas_semana|pluralize }} concluída{{ aulas_semana|pluralize }}<br>nesta semana</span>
         </p>
-        <a class="button" href="{% url 'cursos:catalogo' %}">Encontrar meu primeiro curso <span aria-hidden="true">→</span></a>
-      </section>
-    {% endfor %}
-  </div>
+        <ol class="activity-week" aria-label="Aulas concluídas nesta semana">
+          {% for dia in semana %}
+            <li class="{% if dia.aulas %}has-activity{% endif %} {% if dia.hoje %}is-today{% endif %}" title="{{ dia.data|date:'l, d/m' }} · {{ dia.aulas }} aula{{ dia.aulas|pluralize }}">
+              <span class="weekday">{{ dia.data|date:'D'|slice:':3' }}</span><span class="activity-day">{{ dia.data|date:'d' }}</span><span class="sr-only">{{ dia.aulas }} aula{{ dia.aulas|pluralize }}
+              {% if dia.hoje %}
+                , hoje
+              {% endif %}
+              </span>
+            </li>
+          {% endfor %}
+        </ol>
+        <p class="activity-note">
+          {% if aulas_semana %}
+            Cada aula conta. A próxima pode ser hoje.
+          {% else %}
+            Seu próximo momento de estudo pode ser hoje.
+          {% endif %}
+        </p>
+      </aside>
+    </div>
+    <dl class="study-statistics">
+      <div>
+        <dt>
+          Em andamento
+        </dt>
+        <dd>
+          {{ total_andamento }}
+        </dd>
+      </div>
+      <div>
+        <dt>
+          Aulas concluídas
+        </dt>
+        <dd>
+          {{ total_aulas_feitas }}
+        </dd>
+      </div>
+      <div>
+        <dt>
+          Certificados conquistados
+        </dt>
+        <dd>
+          {{ total_concluidos }}
+        </dd>
+      </div>
+    </dl>
+  {% endif %}
+  <section aria-labelledby="minha-biblioteca" class="library-section" data-reveal>
+    <h2 id="minha-biblioteca">
+      Meus cursos
+    </h2>
+    <nav class="section-tabs" aria-label="Filtrar meus cursos">
+      <a href="?status=todos" {% if filtro == 'todos' %}aria-current="page"{% endif %}>Todos <span class="tab-count">{{ total_matriculas }}</span></a><a href="?status=andamento" {% if filtro == 'andamento' %}aria-current="page"{% endif %}>Em andamento <span class="tab-count">{{ total_andamento }}</span></a><a href="?status=concluidos" {% if filtro == 'concluidos' %}aria-current="page"{% endif %}>Concluídos <span class="tab-count">{{ total_concluidos }}</span></a>
+    </nav>
+    <div class="course-grid study-grid">
+      {% for matricula in matriculas %}
+        <article class="course-card study-card" data-reveal>
+          <a class="course-cover" href="{% url 'aprendizagem:curso' matricula.pk %}" tabindex="-1" aria-hidden="true"><img src="{{ matricula.compra.curso|capa_curso }}" alt="" width="900" height="600" loading="lazy"></a>
+          <div class="course-card-body">
+            <p class="study-status {% if matricula.concluida_em %}complete{% endif %}">
+              {% if matricula.concluida_em %}
+                ✓ Curso concluído
+              {% else %}
+                Em andamento
+              {% endif %}
+            </p>
+            <h3>
+              <a href="{% url 'aprendizagem:curso' matricula.pk %}">{{ matricula.compra.curso.titulo }}</a>
+            </h3>
+            <p class="course-teacher">
+              Por {{ matricula.compra.curso.instrutor.nome }}
+            </p>
+            <div class="progress-label">
+              <label for="progresso-{{ matricula.pk }}">Seu progresso</label><strong>{{ matricula.progresso }}%</strong>
+            </div>
+            <progress id="progresso-{{ matricula.pk }}" value="{{ matricula.progresso }}" max="100">
+              {{ matricula.progresso }}%
+            </progress>
+            <div class="card-bottom">
+              <a class="button secondary" href="{% url 'aprendizagem:curso' matricula.pk %}">
+              {% if matricula.concluida_em %}
+                Revisitar curso
+              {% else %}
+                Acessar aulas
+              {% endif %}
+              <span aria-hidden="true">→</span></a>
+              {% if matricula.concluida_em %}
+                <a class="text-link" href="{% url 'aprendizagem:certificado' matricula.certificado.codigo %}">Meu certificado ↗</a>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+      {% empty %}
+        {% if total_matriculas %}
+          <section class="empty-state">
+            <h3>
+              {% if filtro == 'concluidos' %}
+                Sua primeira conquista está a caminho.
+              {% else %}
+                Tudo em dia por aqui.
+              {% endif %}
+            </h3>
+            <p>
+              {% if filtro == 'concluidos' %}
+                Os cursos que você terminar ficam nesta aba, junto com seus certificados.
+              {% else %}
+                Escolha outro curso para seguir aprendendo.
+              {% endif %}
+            </p>
+            <a class="button secondary" href="{% url 'cursos:catalogo' %}">Explorar cursos ↗</a>
+          </section>
+        {% else %}
+          <section class="first-course">
+            <img src="{% static 'images/estudos.jpg' %}" alt="Caderno e material de estudo sobre uma mesa" width="1400" height="933">
+            <div>
+              <p class="eyebrow">
+                TEM UM COMEÇO PRA TUDO
+              </p>
+              <h2>
+                Esse espaço<br>pode ser seu.
+              </h2>
+              <p>
+                Escolha seu primeiro curso. Suas aulas, seu progresso e seus certificados ficam por aqui.
+              </p>
+              <a class="button" href="{% url 'cursos:catalogo' %}">Encontrar meu primeiro curso <span aria-hidden="true">→</span></a>
+            </div>
+          </section>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
 {% endblock %}

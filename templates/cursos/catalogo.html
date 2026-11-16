@@ -7,38 +7,50 @@
   catalog-page
 {% endblock %}
 {% block content %}
-  {% if not busca %}
+  {% if mostrar_hero %}
     <section class="catalog-hero" aria-labelledby="titulo-inicio">
       <div class="hero-copy">
         <h1 id="titulo-inicio">
-          O que você quer<br><em>aprender</em> agora?
+          O que você vai<br><em>aprender hoje?</em>
         </h1>
         <p>
-          Cursos para aprender no seu ritmo, praticar e seguir em frente.
+          Uma nova habilidade, uma ideia que sai do papel. Tudo começa com a primeira aula.
         </p>
-        <a class="button" href="#cursos">Encontre seu curso <span aria-hidden="true">↗</span></a>
+        <div class="hero-actions">
+          <a class="button" href="#cursos">Explore os cursos <span aria-hidden="true">↗</span></a>
+          {% if user.is_authenticated %}
+            <a class="text-link" href="{% url 'aprendizagem:painel' %}">Meus estudos →</a>
+          {% endif %}
+        </div>
+        <p class="hero-footnote">
+          Aulas no seu ritmo <span aria-hidden="true">·</span> Certificado ao concluir
+        </p>
       </div>
       <div class="hero-photo">
-        <img src="{% static 'images/estudos.jpg' %}" alt="Pessoa fazendo anotações em uma mesa de estudos" width="1400" height="933" fetchpriority="high">
+        <div class="hero-image-wrap">
+          <img src="{% static 'images/aprendizado.jpg' %}" alt="Grupo de estudantes compartilhando ideias em torno de uma mesa" width="1400" height="933" fetchpriority="high">
+        </div>
+        {% if curso_destaque %}
+          <a class="hero-feature" href="{% url 'cursos:detalhe' curso_destaque.pk %}">
+          <img src="{{ curso_destaque|capa_curso }}" alt="" width="90" height="72">
+          <span><small>CONHEÇA O CURSO</small><strong>{{ curso_destaque.titulo }}</strong></span>
+          <span class="hero-feature-arrow" aria-hidden="true">↗</span>
+          </a>
+        {% endif %}
       </div>
     </section>
-    <div class="learning-benefits" aria-label="Como funciona a Aprenda+">
-      <span><span class="benefit-symbol" aria-hidden="true">↗</span>Aulas no seu ritmo</span>
-      <span><span class="benefit-symbol" aria-hidden="true">✓</span>Prática com questionários</span>
-      <span><span class="benefit-symbol" aria-hidden="true">✳</span>Certificado de conclusão</span>
-    </div>
   {% endif %}
-  <section id="cursos" class="catalog-section" aria-labelledby="titulo-catalogo">
+  <section id="cursos" class="catalog-section" aria-labelledby="titulo-catalogo" data-reveal>
     <div class="catalog-heading">
       <div>
         <p class="eyebrow">
-          CATÁLOGO DE CURSOS
+          APRENDA ALGO NOVO
         </p>
         <h2 id="titulo-catalogo">
           {% if busca %}
             Resultados para “{{ busca }}”
           {% else %}
-            Escolha por onde começar
+            Encontre seu próximo curso
           {% endif %}
         </h2>
         <p class="muted">
@@ -49,7 +61,16 @@
         {% if busca %}
           <input type="hidden" name="q" value="{{ busca }}">
         {% endif %}
-        <label for="ordenar">Ordenar por</label>
+        {% if formato %}
+          <input type="hidden" name="formato" value="{{ formato }}">
+        {% endif %}
+        <label class="sr-only" for="preco">Filtrar por preço</label>
+        <select id="preco" name="preco">
+        <option value="">Todos os preços</option>
+        <option value="gratis" {% if preco == 'gratis' %}selected{% endif %}>Gratuitos</option>
+        <option value="pagos" {% if preco == 'pagos' %}selected{% endif %}>Pagos</option>
+        </select>
+        <label class="sr-only" for="ordenar">Ordenar cursos</label>
         <select id="ordenar" name="ordenar">
         <option value="recentes" {% if ordenacao == 'recentes' %}selected{% endif %}>Mais recentes</option>
         <option value="menor_preco" {% if ordenacao == 'menor_preco' %}selected{% endif %}>Menor preço</option>
@@ -60,12 +81,28 @@
         </button>
       </form>
     </div>
-    {% if busca %}
-      <a class="search-chip" href="{% url 'cursos:catalogo' %}">{{ busca }} <span aria-hidden="true">×</span><span class="sr-only">Limpar busca</span></a>
+    <div class="catalog-controls">
+      <nav class="format-filters" aria-label="Filtrar por conteúdo do curso">
+        <a href="{% querystring formato=None %}" {% if not formato %}aria-current="page"{% endif %}>Todos</a>
+        <a href="{% querystring formato='video' %}" {% if formato == 'video' %}aria-current="page"{% endif %}>Com vídeo</a>
+        <a href="{% querystring formato='texto' %}" {% if formato == 'texto' %}aria-current="page"{% endif %}>Com texto</a>
+        <a href="{% querystring formato='questionario' %}" {% if formato == 'questionario' %}aria-current="page"{% endif %}>Com exercícios</a>
+      </nav>
+      <div class="view-controls" aria-label="Visualização do catálogo" data-view-controls hidden>
+        <button type="button" data-layout="grade" aria-controls="grade-cursos" aria-pressed="true" aria-label="Visualização em grade" title="Grade">
+          <span aria-hidden="true">▦</span>
+        </button>
+        <button type="button" data-layout="lista" aria-controls="grade-cursos" aria-pressed="false" aria-label="Visualização em lista" title="Lista">
+          <span aria-hidden="true">☰</span>
+        </button>
+      </div>
+    </div>
+    {% if busca or formato or preco %}
+      <a class="search-chip" href="{% url 'cursos:catalogo' %}">Limpar filtros <span aria-hidden="true">×</span></a>
     {% endif %}
-    <div class="course-grid catalog-grid">
+    <div id="grade-cursos" class="course-grid catalog-grid" data-catalog>
       {% for curso in cursos %}
-        <article class="course-card">
+        <article class="course-card" data-reveal>
           <a class="course-cover" href="{% url 'cursos:detalhe' curso.pk %}" tabindex="-1" aria-hidden="true"><img src="{{ curso|capa_curso }}" alt="" width="900" height="600" loading="lazy"></a>
           <div class="course-card-body">
             <div class="course-meta">
@@ -80,6 +117,11 @@
             <p class="course-description">
               {{ curso.descricao|truncatewords:28 }}
             </p>
+            <div class="course-card-actions">
+              <button type="button" class="preview-button" data-course-preview="preview-{{ curso.pk }}" aria-label="Ver programa de {{ curso.titulo }}" hidden>
+                Espiar o curso <span aria-hidden="true">+</span>
+              </button>
+            </div>
             <div class="card-bottom">
               <div>
                 <span class="price">R$ {{ curso.preco|floatformat:2 }}</span><small>Pagamento único</small>
@@ -92,33 +134,47 @@
         <div class="empty-state">
           <span class="empty-symbol" aria-hidden="true">⌕</span>
           <h3>
-            Nenhum curso por aqui ainda.
+            Vamos tentar outro caminho?
           </h3>
           <p>
-            {% if busca %}
-              Tente outro assunto ou procure pelo nome do curso.
+            {% if busca or formato or preco %}
+              Ajuste a busca ou remova um filtro para encontrar outros cursos.
             {% else %}
-              Os cursos publicados pelos instrutores aparecerão aqui.
+              Os próximos cursos publicados vão aparecer aqui.
             {% endif %}
           </p>
-          {% if busca %}
-            <a class="button secondary" href="{% url 'cursos:catalogo' %}">Ver todos os cursos</a>
+          {% if busca or formato or preco %}
+            <a class="button secondary" href="{% url 'cursos:catalogo' %}">Ver todos os cursos →</a>
           {% endif %}
         </div>
       {% endfor %}
     </div>
+    {% for curso in cursos %}
+      <template id="preview-{{ curso.pk }}">
+        {% include 'includes/previa_curso.html' %}
+      </template>
+    {% endfor %}
+    <dialog class="course-dialog" data-course-dialog aria-label="Prévia do curso">
+      <div class="dialog-shell">
+        <button type="button" class="dialog-close" data-close-dialog aria-label="Fechar prévia">
+          ×
+        </button>
+        <div data-dialog-content>
+        </div>
+      </div>
+    </dialog>
   </section>
   {% if not user.is_authenticated or user.pode_instruir %}
-    <section class="teach-panel">
+    <section class="teach-panel" data-reveal>
       <div>
         <p class="eyebrow">
           PARA QUEM ENSINA
         </p>
         <h2>
-          O que você sabe pode<br>ser o começo de alguém.
+          Tem alguém querendo<br>aprender o que você sabe.
         </h2>
         <p>
-          Organize suas aulas, publique seu curso e acompanhe seus alunos.
+          Do primeiro módulo à última aula, seu curso tem lugar aqui.
         </p>
       </div>
       {% if user.pode_instruir %}

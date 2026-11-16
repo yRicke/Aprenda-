@@ -14,7 +14,7 @@
 }
 
 html {
-  scroll-padding-top: 24px;
+  scroll-padding-top: 120px;
 }
 
 body {
@@ -288,7 +288,8 @@ main.container {
 
 /* Navegação */
 .site-header {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 20;
   background: white;
   border-bottom: 1px solid var(--line);
@@ -542,34 +543,33 @@ main.container {
 /* Catálogo */
 .catalog-hero {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 420px;
-  overflow: hidden;
-  border-radius: 8px;
-  background: #e8e9df;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 56px;
+  min-height: 500px;
+  padding-block: 12px 28px;
 }
 
 .hero-copy {
   align-self: center;
-  padding: 58px 48px 58px 56px;
+  padding: 26px 0;
 }
 
 .hero-copy h1 {
   margin-bottom: 24px;
   font-family: 'Instrument Serif', serif;
-  font-size: clamp(48px, 5.4vw, 76px);
+  font-size: clamp(54px, 6.8vw, 92px);
   font-weight: 400;
-  line-height: .99;
+  line-height: .96;
   letter-spacing: -.035em;
 }
 
 .hero-copy h1 em {
-  color: #59694d;
+  color: #bd6542;
   font-weight: 400;
 }
 
 .hero-copy p {
-  max-width: 320px;
+  max-width: 340px;
   margin-bottom: 30px;
   color: #5e6457;
   font-size: 15px;
@@ -577,6 +577,8 @@ main.container {
 }
 
 .hero-photo {
+  display: grid;
+  grid-template-rows: minmax(340px, 1fr) auto;
   position: relative;
   min-width: 0;
 }
@@ -585,23 +587,7 @@ main.container {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 45% center;
-}
-
-.learning-benefits {
-  display: flex;
-  justify-content: space-around;
-  gap: 24px;
-  padding: 25px 0;
-  border-bottom: 1px solid var(--line);
-  color: #5e655b;
-  font-size: 13px;
-}
-
-.learning-benefits > span {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  object-position: 55% center;
 }
 
 .benefit-symbol {
@@ -950,7 +936,7 @@ main.container {
 
 .course-purchase {
   position: sticky;
-  top: 28px;
+  top: 118px;
   overflow: hidden;
   padding: 0;
 }
@@ -1322,7 +1308,7 @@ progress::-moz-progress-bar {
 
 .progress-card {
   position: sticky;
-  top: 28px;
+  top: 118px;
   padding: 30px;
   background: #f0f1e9;
   border-color: #e2e5d8;
@@ -1583,7 +1569,7 @@ progress::-moz-progress-bar {
 
 .classroom-sidebar {
   position: sticky;
-  top: 28px;
+  top: 118px;
   overflow: hidden;
   border: 1px solid #dfe5d4;
   border-radius: 7px;
@@ -1925,7 +1911,7 @@ form p {
 
 .order-summary {
   position: sticky;
-  top: 28px;
+  top: 118px;
 }
 
 .order-summary > h2 {
@@ -2150,7 +2136,7 @@ form p {
 
 @media (min-width: 1500px) {
   .catalog-hero {
-    min-height: 460px;
+    min-height: 530px;
   }
 }
 
@@ -2166,13 +2152,14 @@ form p {
     width: calc(100% - 60px);
   }
   .hero-copy {
-    padding: 46px 34px;
+    padding: 26px 0;
   }
   .hero-copy h1 {
-    font-size: 60px;
+    font-size: 72px;
   }
   .catalog-hero {
-    min-height: 380px;
+    min-height: 460px;
+    gap: 36px;
   }
   .course-grid {
     gap: 20px;
@@ -2225,17 +2212,13 @@ form p {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .hero-copy h1 {
-    font-size: 51px;
+    font-size: 60px;
   }
   .hero-copy p {
     font-size: 13px;
   }
   .catalog-hero {
-    min-height: 340px;
-  }
-  .learning-benefits {
-    gap: 20px;
-    font-size: 11px;
+    min-height: 420px;
   }
   .benefit-symbol {
     font-size: 21px;
@@ -2299,6 +2282,12 @@ form p {
 }
 
 @media (max-width: 700px) {
+  .site-header {
+    position: relative;
+  }
+  html {
+    scroll-padding-top: 24px;
+  }
   .container {
     width: calc(100% - 36px);
   }
@@ -2338,37 +2327,25 @@ form p {
   .catalog-hero {
     grid-template-columns: 1fr;
     min-height: 0;
+    gap: 24px;
+    padding-block: 0;
   }
   .hero-copy {
-    padding: 36px 30px;
+    padding: 10px 0;
   }
   .hero-copy h1 {
-    font-size: clamp(46px, 9vw, 62px);
+    font-size: clamp(49px, 9vw, 67px);
   }
   .hero-copy p {
     max-width: 340px;
     font-size: 14px;
   }
   .hero-photo {
-    height: 215px;
+    grid-template-rows: 270px auto;
+    height: auto;
   }
   .hero-photo img {
-    object-position: 50% 54%;
-  }
-  .learning-benefits {
-    justify-content: flex-start;
-    flex-wrap: wrap;
-    gap: 14px 24px;
-    padding: 20px 0;
-    font-size: 11px;
-  }
-  .learning-benefits > span {
-    gap: 7px;
-  }
-  .learning-benefits .benefit-symbol {
-    width: 20px;
-    height: 22px;
-    font-size: 20px;
+    object-position: 55% center;
   }
   .catalog-section {
     padding-top: 34px;

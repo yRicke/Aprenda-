@@ -13,6 +13,7 @@
     <link rel="preload" href="{% static 'fonts/aprenda-0.woff2' %}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
     <link rel="stylesheet" href="{% static 'css/plataforma.css' %}">
+    <link rel="stylesheet" href="{% static 'css/experiencia.css' %}">
     <script defer src="{% static 'js/plataforma.js' %}"></script>
   </head>
   <body class="{% block body_class %}{% endblock %}">
@@ -23,6 +24,7 @@
         <form class="header-search" action="{% url 'cursos:catalogo' %}" method="get" role="search">
           <label class="sr-only" for="busca-global">O que você quer aprender?</label>
           <input id="busca-global" name="q" value="{{ request.GET.q }}" placeholder="O que você quer aprender?" type="search">
+          <kbd class="search-shortcut" aria-hidden="true" hidden>/</kbd>
           <button type="submit" class="search-button" aria-label="Buscar cursos">
             <span class="search-icon" aria-hidden="true"></span>
           </button>

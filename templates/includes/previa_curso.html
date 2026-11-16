@@ -1,0 +1,42 @@
+{% load cursos_ui %}
+<div class="preview-layout">
+  <div class="preview-image">
+    <img src="{{ curso|capa_curso }}" alt="" width="900" height="600">
+  </div>
+  <div class="preview-content">
+    <p class="eyebrow">
+      POR DENTRO DO CURSO
+    </p>
+    <h2 data-preview-title>
+      {{ curso.titulo }}
+    </h2>
+    <p class="course-teacher">
+      Por {{ curso.instrutor.nome }}
+    </p>
+    <p class="preview-description">
+      {{ curso.descricao|truncatewords:45 }}
+    </p>
+    <div class="preview-curriculum">
+      <h3>
+        O que vem pela frente
+      </h3>
+      {% for modulo in curso.modulos.all %}
+        <details {% if forloop.first %}open{% endif %}>
+          <summary>
+            {{ modulo.titulo }}<span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <ul>
+            {% for aula in modulo.aulas.all %}
+              <li>
+                <span>{{ aula.titulo }}</span><small>{{ aula.get_tipo_display }}</small>
+              </li>
+            {% endfor %}
+          </ul>
+        </details>
+      {% endfor %}
+    </div>
+    <div class="preview-bottom">
+      <strong class="price">R$ {{ curso.preco|floatformat:2 }}</strong><a class="button" href="{% url 'cursos:detalhe' curso.pk %}">Quero conhecer <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</div>

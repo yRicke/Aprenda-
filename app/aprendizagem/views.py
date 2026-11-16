@@ -8,6 +8,7 @@ from app.cursos.models import Aula
 
 from .forms import RespostasForm
 from .models import Certificado, Matricula
+from .selectors import dados_do_painel, primeira_aula_pendente
 from .services import concluir_aula, concluir_curso, responder
 
 
@@ -20,8 +21,8 @@ def buscar_matricula(usuario, matricula_id):
 
 @login_required
 def painel(request):
-    matriculas = Matricula.objects.filter(compra__aluno=request.user).select_related('compra__curso')
-    return render(request, 'aprendizagem/painel.html', {'matriculas': matriculas})
+    contexto = dados_do_painel(request.user, request.GET.get('status', 'todos'))
+    return render(request, 'aprendizagem/painel.html', contexto)
 
 
 @login_required
@@ -31,6 +32,7 @@ def curso(request, matricula_id):
     concluidas = set(matricula.conclusoes.values_list('aula_id', flat=True))
     return render(request, 'aprendizagem/curso.html', {
         'matricula': matricula, 'modulos': modulos, 'concluidas': concluidas,
+        'aula_retomada': primeira_aula_pendente(matricula),
     })
 
 
@@ -39,7 +41,10 @@ def aula(request, matricula_id, aula_id):
     matricula = buscar_matricula(request.user, matricula_id)
     aula = get_object_or_404(Aula, pk=aula_id, modulo__curso=matricula.compra.curso)
     conteudo = aula.conteudo
-    aulas = Aula.objects.filter(modulo__curso=matricula.compra.curso).select_related('modulo')
+    aulas = list(Aula.objects.filter(modulo__curso=matricula.compra.curso).select_related('modulo'))
+    posicao = aulas.index(aula)
+    anterior = aulas[posicao - 1] if posicao else None
+    proxima = aulas[posicao + 1] if posicao + 1 < len(aulas) else None
     concluidas = set(matricula.conclusoes.values_list('aula_id', flat=True))
     form = None
     if aula.tipo == Aula.Tipo.QUESTIONARIO:
@@ -57,12 +62,15 @@ def aula(request, matricula_id, aula_id):
     elif request.method == 'POST':
         concluir_aula(matricula_id=matricula.pk, aluno=request.user, aula=aula)
         messages.success(request, 'Aula concluída!')
+        if request.POST.get('continuar') == '1' and proxima:
+            return redirect('aprendizagem:aula', matricula.pk, proxima.pk)
         return redirect('aprendizagem:curso', matricula.pk)
     return render(request, 'aprendizagem/aula.html', {
         'matricula': matricula, 'aula': aula, 'conteudo': conteudo, 'form': form,
         'concluida': matricula.conclusoes.filter(aula=aula).exists(),
         'tentativas': matricula.tentativas.filter(questionario_id=aula.pk),
         'aulas': aulas, 'concluidas': concluidas,
+        'anterior': anterior, 'proxima': proxima, 'numero_aula': posicao + 1,
     })
 
 
