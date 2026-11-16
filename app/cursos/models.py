@@ -10,6 +10,7 @@ class Curso(models.Model):
     instrutor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='cursos')
     titulo = models.CharField('título', max_length=180)
     descricao = models.TextField('descrição')
+    capa_url = models.URLField('Imagem de capa', blank=True, help_text='Link de uma imagem horizontal para apresentar o curso.')
     preco = models.DecimalField('preço', max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     publicado = models.BooleanField(default=False)
     criado_em = models.DateTimeField(auto_now_add=True)

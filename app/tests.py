@@ -285,6 +285,28 @@ class PlataformaTests(TestCase):
         self.assertEqual(resposta.status_code, 405)
         self.assertFalse(Certificado.objects.exists())
 
+    def test_catalogo_ordena_por_preco_e_preserva_busca(self):
+        outro_curso = Curso.objects.create(instrutor=self.instrutor, titulo='Python avançado', descricao='Mais Python', preco=20)
+        modulo = Modulo.objects.create(curso=outro_curso, titulo='Prática', ordem=1)
+        AulaTexto.objects.create(modulo=modulo, titulo='Prática', ordem=1, texto='Conteúdo')
+        outro_curso.publicado = True
+        outro_curso.save()
+        url = reverse('cursos:catalogo')
+        menor_preco = self.client.get(url, {'q': 'Python', 'ordenar': 'menor_preco'})
+        maior_preco = self.client.get(url, {'q': 'Python', 'ordenar': 'maior_preco'})
+        self.assertEqual([curso.pk for curso in menor_preco.context['cursos']], [outro_curso.pk, self.curso.pk])
+        self.assertEqual([curso.pk for curso in maior_preco.context['cursos']], [self.curso.pk, outro_curso.pk])
+        self.assertEqual(menor_preco.context['cursos'][1].quantidade_aulas, 3)
+        self.assertEqual(self.client.get(url, {'ordenar': 'invalida'}).context['ordenacao'], 'recentes')
+
+    def test_capas_padrao_e_personalizada_no_catalogo_e_detalhe(self):
+        url = reverse('cursos:catalogo')
+        self.assertContains(self.client.get(url), '/static/images/programacao.jpg')
+        self.curso.capa_url = 'https://example.com/capa.jpg'
+        self.curso.save()
+        self.assertContains(self.client.get(url), self.curso.capa_url)
+        self.assertContains(self.client.get(reverse('cursos:detalhe', args=[self.curso.pk])), self.curso.capa_url)
+
     def test_admin_preserva_estrutura_e_registros_financeiros(self):
         matricula, _ = self.comprar_curso()
         admin = Usuario.objects.create_superuser('gestor', 'gestor@example.com', 'teste-forte123')

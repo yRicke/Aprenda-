@@ -1,16 +1,24 @@
 {% extends 'base.html' %}
+{% load cursos_ui %}
 {% block title %}
   Comprar curso · Aprenda+
 {% endblock %}
 {% block content %}
   <a class="back" href="{% url 'cursos:detalhe' curso.pk %}">← Voltar ao curso</a>
-  <h1>
-    Comprar curso
-  </h1>
-  <div class="two-columns">
-    <section class="card">
+  <header class="page-heading">
+    <div>
+      <p class="eyebrow">
+        SÓ FALTA UM PASSO
+      </p>
+      <h1>
+        Seu próximo aprendizado<span class="heading-dot">.</span>
+      </h1>
+    </div>
+  </header>
+  <div class="two-columns checkout-layout">
+    <section class="card checkout-form">
       <h2>
-        {{ curso.titulo }}
+        Finalizar compra
       </h2>
       {% if pendente %}
         <div class="message warning">
@@ -18,33 +26,58 @@
         </div>
         <form method="post" action="{% url 'compras:consultar' pendente.pk %}">
           {% csrf_token %}
-          <button>Consultar pagamento</button>
+          <button>
+            Consultar pagamento →
+          </button>
         </form>
       {% else %}
         <form method="post">
           {% csrf_token %}
           {{ form.non_field_errors }}{{ form.oferta }}
-          <p>
-            {{ form.cupom.label_tag }}{{ form.cupom }}{{ form.cupom.errors }}
-          </p>
-          <button class="secondary" name="acao" value="aplicar">Aplicar cupom</button>
+          <div class="coupon-field">
+            <label for="{{ form.cupom.id_for_label }}">Tem um cupom?</label>
+            <div>
+              {{ form.cupom }}
+              <button class="secondary" name="acao" value="aplicar">
+                Aplicar
+              </button>
+            </div>
+            {{ form.cupom.errors }}
+          </div>
+          <hr>
+          <h3>
+            Pagamento
+          </h3>
           <p>
             {{ form.token.label_tag }}{{ form.token }}{{ form.token.errors }}
           </p>
-          <p class="muted">
-            Ambiente de demonstração. Os pagamentos são simulados.
+          <p class="payment-notice">
+            Você está no ambiente de demonstração. Este pagamento é simulado.
           </p>
-          <button name="acao" value="comprar">Confirmar compra de R$ {{ valor|floatformat:2 }}</button>
+          <button class="checkout-submit" name="acao" value="comprar">
+            Confirmar compra de R$ {{ valor|floatformat:2 }} <span aria-hidden="true">→</span>
+          </button>
         </form>
       {% endif %}
     </section>
-    <aside class="card purchase-card">
+    <aside class="card purchase-card order-summary">
       <h2>
-        Resumo da compra
+        Seu curso
       </h2>
+      <div class="order-course">
+        <img src="{{ curso|capa_curso }}" alt="" width="180" height="120">
+        <div>
+          <h3>
+            {{ curso.titulo }}
+          </h3>
+          <p class="muted">
+            {{ curso.instrutor.nome }}
+          </p>
+        </div>
+      </div>
       <dl class="summary">
         <dt>
-          Preço
+          Preço do curso
         </dt>
         <dd>
           R$ {{ curso.preco|floatformat:2 }}
@@ -52,19 +85,22 @@
         <dt>
           Desconto
           {% if cupom %}
-            · {{ cupom.codigo }}
+            <small>{{ cupom.codigo }}</small>
           {% endif %}
         </dt>
         <dd>
-          R$ {{ desconto|floatformat:2 }}
+          − R$ {{ desconto|floatformat:2 }}
         </dd>
-        <dt>
-          <strong>Total</strong>
+        <dt class="total">
+          Total
         </dt>
-        <dd>
-          <strong>R$ {{ valor|floatformat:2 }}</strong>
+        <dd class="total">
+          R$ {{ valor|floatformat:2 }}
         </dd>
       </dl>
+      <p class="purchase-note">
+        Após a aprovação, suas aulas ficam disponíveis em Meus estudos.
+      </p>
     </aside>
   </div>
 {% endblock %}

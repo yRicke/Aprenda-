@@ -1,47 +1,74 @@
 {% extends 'base.html' %}
+{% load cursos_ui %}
 {% block title %}
   Meus estudos · Aprenda+
 {% endblock %}
 {% block content %}
-  <div class="page-heading">
-    <h1>
-      Meus estudos
-    </h1>
-    <a href="{% url 'cursos:catalogo' %}">Explorar cursos</a>
+  <header class="page-heading dashboard-heading">
+    <div>
+      <p class="eyebrow">
+        SEU ESPAÇO DE APRENDIZADO
+      </p>
+      <h1>
+        Meus estudos<span class="heading-dot">.</span>
+      </h1>
+      <p class="muted">
+        Bom te ver por aqui, {{ user.first_name|default:user.username }}.
+      </p>
+    </div>
+    <a class="text-link" href="{% url 'cursos:catalogo' %}">Explorar outros cursos <span aria-hidden="true">↗</span></a>
+  </header>
+  <div class="section-tabs">
+    <span aria-current="page">Minha aprendizagem <span class="tab-count">{{ matriculas|length }}</span></span>
   </div>
-  <div class="course-grid">
+  <div class="course-grid study-grid">
     {% for matricula in matriculas %}
-      <article class="card course-card">
-        <p class="muted">
-          {% if matricula.concluida_em %}
-            Concluído em {{ matricula.concluida_em|date:'d/m/Y' }}
-          {% else %}
-            Em andamento
-          {% endif %}
-        </p>
-        <h2>
-          {{ matricula.compra.curso.titulo }}
-        </h2>
-        <label for="progresso-{{ matricula.pk }}">{{ matricula.progresso }}% concluído</label>
-        <progress id="progresso-{{ matricula.pk }}" value="{{ matricula.progresso }}" max="100">
-          {{ matricula.progresso }}%
-        </progress>
-        <div class="card-bottom">
-          <a class="button" href="{% url 'aprendizagem:curso' matricula.pk %}">Acessar curso</a>
-          {% if matricula.concluida_em %}
-            <a href="{% url 'aprendizagem:certificado' matricula.certificado.codigo %}">Certificado</a>
-          {% endif %}
+      <article class="course-card study-card">
+        <a class="course-cover" href="{% url 'aprendizagem:curso' matricula.pk %}" tabindex="-1" aria-hidden="true"><img src="{{ matricula.compra.curso|capa_curso }}" alt="" width="900" height="600" loading="lazy"></a>
+        <div class="course-card-body">
+          <p class="study-status {% if matricula.concluida_em %}complete{% endif %}">
+            {% if matricula.concluida_em %}
+              ✓ Curso concluído
+            {% else %}
+              Em andamento
+            {% endif %}
+          </p>
+          <h2>
+            <a href="{% url 'aprendizagem:curso' matricula.pk %}">{{ matricula.compra.curso.titulo }}</a>
+          </h2>
+          <p class="course-teacher">
+            Por {{ matricula.compra.curso.instrutor.nome }}
+          </p>
+          <div class="progress-label">
+            <label for="progresso-{{ matricula.pk }}">Seu progresso</label><strong>{{ matricula.progresso }}%</strong>
+          </div>
+          <progress id="progresso-{{ matricula.pk }}" value="{{ matricula.progresso }}" max="100">
+            {{ matricula.progresso }}%
+          </progress>
+          <div class="card-bottom">
+            <a class="button secondary" href="{% url 'aprendizagem:curso' matricula.pk %}">
+            {% if matricula.concluida_em %}
+              Revisitar curso
+            {% else %}
+              Continuar estudando
+            {% endif %}
+            <span aria-hidden="true">→</span></a>
+            {% if matricula.concluida_em %}
+              <a class="text-link" href="{% url 'aprendizagem:certificado' matricula.certificado.codigo %}">Certificado ↗</a>
+            {% endif %}
+          </div>
         </div>
       </article>
     {% empty %}
-      <section class="card empty">
+      <section class="empty-state study-empty">
+        <span class="empty-symbol" aria-hidden="true">↗</span>
         <h2>
-          Seus estudos começam aqui
+          Que tal começar um curso?
         </h2>
         <p>
-          Após comprar um curso, você acompanha as aulas e o progresso nesta página.
+          Suas aulas, seu progresso e seus certificados ficam todos aqui.
         </p>
-        <a class="button" href="{% url 'cursos:catalogo' %}">Encontrar um curso</a>
+        <a class="button" href="{% url 'cursos:catalogo' %}">Encontrar meu primeiro curso <span aria-hidden="true">→</span></a>
       </section>
     {% endfor %}
   </div>

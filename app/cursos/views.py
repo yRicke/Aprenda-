@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Count, Q
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -18,11 +18,21 @@ from .services import alternar_publicacao
 
 
 def catalogo(request):
-    cursos = Curso.objects.filter(publicado=True).select_related('instrutor')
+    cursos = Curso.objects.filter(publicado=True).select_related('instrutor').annotate(
+        quantidade_aulas=Count('modulos__aulas', distinct=True),
+        quantidade_modulos=Count('modulos', distinct=True),
+    )
     busca = request.GET.get('q', '').strip()
+    ordenacao = request.GET.get('ordenar', 'recentes')
+    ordenacoes = {'recentes': '-criado_em', 'menor_preco': 'preco', 'maior_preco': '-preco'}
+    if ordenacao not in ordenacoes:
+        ordenacao = 'recentes'
+    cursos = cursos.order_by(ordenacoes[ordenacao], 'pk')
     if busca:
         cursos = cursos.filter(Q(titulo__icontains=busca) | Q(descricao__icontains=busca))
-    return render(request, 'cursos/catalogo.html', {'cursos': cursos, 'busca': busca})
+    return render(request, 'cursos/catalogo.html', {
+        'cursos': cursos, 'busca': busca, 'ordenacao': ordenacao,
+    })
 
 
 def detalhe(request, curso_id):

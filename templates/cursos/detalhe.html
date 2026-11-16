@@ -1,50 +1,83 @@
 {% extends 'base.html' %}
+{% load cursos_ui %}
 {% block title %}
   {{ curso.titulo }} · Aprenda+
 {% endblock %}
 {% block content %}
-  <a class="back" href="{% url 'cursos:catalogo' %}">← Catálogo de cursos</a>
-  <div class="two-columns">
+  <a class="back" href="{% url 'cursos:catalogo' %}">← Explorar cursos</a>
+  <div class="course-detail-grid">
     <section>
-      <h1>
-        {{ curso.titulo }}
-      </h1>
-      <p class="muted">
-        Por {{ curso.instrutor.nome }}
-      </p>
-      <div class="prose">
-        {{ curso.descricao|linebreaks }}
-      </div>
-      <h2>
-        Conteúdo do curso
-      </h2>
-      {% for modulo in modulos %}
-        <section class="card module">
-          <h3>
-            {{ modulo.ordem }}. {{ modulo.titulo }}
-          </h3>
-          <ul class="lesson-list">
-            {% for aula in modulo.aulas.all %}
-              <li>
-                <span>{{ aula.titulo }}</span><span class="muted">{{ aula.get_tipo_display }}</span>
-              </li>
-            {% endfor %}
-          </ul>
-        </section>
-      {% endfor %}
-    </section>
-    <aside class="card purchase-card">
-      <p class="price">
-        R$ {{ curso.preco|floatformat:2 }}
-      </p>
-      {% if matricula %}
-        <a class="button" href="{% url 'aprendizagem:curso' matricula.pk %}">Acessar meu curso</a>
-      {% else %}
-        <a class="button" href="{% url 'compras:checkout' curso.pk %}">Comprar curso</a>
-        <p class="muted">
-          Acesso liberado após a autorização do pagamento.
+      <header class="course-intro">
+        <p class="eyebrow">
+          CURSO ONLINE
         </p>
-      {% endif %}
+        <h1>
+          {{ curso.titulo }}
+        </h1>
+        <div class="teacher-line">
+          <span class="avatar small-avatar">{{ curso.instrutor.nome|slice:':1'|upper }}</span><span>Um curso de <strong>{{ curso.instrutor.nome }}</strong></span>
+        </div>
+        <div class="prose lead">
+          {{ curso.descricao|linebreaks }}
+        </div>
+      </header>
+      <section class="syllabus" aria-labelledby="conteudo-curso">
+        <div class="section-heading">
+          <h2 id="conteudo-curso">
+            O que você vai estudar
+          </h2>
+          <span class="muted">{{ modulos|length }} módulo{{ modulos|length|pluralize }}</span>
+        </div>
+        {% for modulo in modulos %}
+          <details class="module-accordion" {% if forloop.first %}open{% endif %}>
+            <summary>
+              <span class="module-number">{{ modulo.ordem|stringformat:'02d' }}</span><span>{{ modulo.titulo }}<small>{{ modulo.aulas.count }} aula{{ modulo.aulas.count|pluralize }}</small></span><span class="accordion-icon" aria-hidden="true"></span>
+            </summary>
+            <ul class="lesson-list">
+              {% for aula in modulo.aulas.all %}
+                <li>
+                  <span class="lesson-type-icon {{ aula.tipo }}" aria-hidden="true"></span><span>{{ aula.titulo }}</span><small>{{ aula.get_tipo_display }}</small>
+                </li>
+              {% endfor %}
+            </ul>
+          </details>
+        {% endfor %}
+      </section>
+    </section>
+    <aside class="course-purchase card">
+      <img class="purchase-cover" src="{{ curso|capa_curso }}" alt="" width="900" height="600">
+      <div class="purchase-body">
+        <p class="price">
+          R$ {{ curso.preco|floatformat:2 }}
+        </p>
+        <p class="muted">
+          Pagamento único pelo curso
+        </p>
+        {% if matricula %}
+          <a class="button" href="{% url 'aprendizagem:curso' matricula.pk %}">Continuar meu curso <span aria-hidden="true">→</span></a>
+        {% else %}
+          <a class="button" href="{% url 'compras:checkout' curso.pk %}">Começar este curso <span aria-hidden="true">→</span></a>
+        {% endif %}
+        <ul class="included-list">
+          <li>
+            ✓ Aulas organizadas em módulos
+          </li>
+          <li>
+            ✓ Estude no seu ritmo
+          </li>
+          <li>
+            ✓ Acompanhe seu progresso
+          </li>
+          <li>
+            ✓ Certificado ao concluir as aulas
+          </li>
+        </ul>
+        {% if not matricula %}
+          <p class="purchase-note">
+            O acesso é liberado após a autorização do pagamento.
+          </p>
+        {% endif %}
+      </div>
     </aside>
   </div>
 {% endblock %}

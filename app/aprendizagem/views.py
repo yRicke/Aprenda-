@@ -39,6 +39,8 @@ def aula(request, matricula_id, aula_id):
     matricula = buscar_matricula(request.user, matricula_id)
     aula = get_object_or_404(Aula, pk=aula_id, modulo__curso=matricula.compra.curso)
     conteudo = aula.conteudo
+    aulas = Aula.objects.filter(modulo__curso=matricula.compra.curso).select_related('modulo')
+    concluidas = set(matricula.conclusoes.values_list('aula_id', flat=True))
     form = None
     if aula.tipo == Aula.Tipo.QUESTIONARIO:
         form = RespostasForm(conteudo.questoes, request.POST if request.method == 'POST' else None)
@@ -60,6 +62,7 @@ def aula(request, matricula_id, aula_id):
         'matricula': matricula, 'aula': aula, 'conteudo': conteudo, 'form': form,
         'concluida': matricula.conclusoes.filter(aula=aula).exists(),
         'tentativas': matricula.tentativas.filter(questionario_id=aula.pk),
+        'aulas': aulas, 'concluidas': concluidas,
     })
 
 

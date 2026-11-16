@@ -1,22 +1,47 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}
   Entrar · Aprenda+
 {% endblock %}
+{% block body_class %}
+  auth-page
+{% endblock %}
 {% block content %}
-  <section class="card auth-card">
-    <h1>
-      Entrar na Aprenda+
-    </h1>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      {% if next %}
-        <input type="hidden" name="next" value="{{ next }}">
-      {% endif %}
-      <button type="submit">Entrar</button>
-    </form>
-    <p>
-      Ainda precisa de uma conta? <a href="{% url 'contas:cadastro' %}">Cadastre-se</a>
-    </p>
-  </section>
+  <div class="auth-layout">
+    <aside class="auth-photo">
+      <img src="{% static 'images/estudos.jpg' %}" alt="Caderno e material de estudo sobre uma mesa" width="1400" height="933">
+    </aside>
+    <section class="auth-card">
+      <a class="back" href="{% url 'cursos:catalogo' %}">← Voltar aos cursos</a>
+      <h1>
+        Bom te ver<br>por aqui<span class="heading-dot">.</span>
+      </h1>
+      <p class="muted">
+        Entre para continuar de onde parou.
+      </p>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <p>
+          {{ form.username.label_tag }}{{ form.username }}{{ form.username.errors }}
+        </p>
+        <p>
+          {{ form.password.label_tag }}<span class="password-field">{{ form.password }}
+          <button type="button" class="password-toggle" data-password-toggle="id_password" aria-pressed="false">
+            Mostrar
+          </button>
+          </span>{{ form.password.errors }}
+        </p>
+        {% if next %}
+          <input type="hidden" name="next" value="{{ next }}">
+        {% endif %}
+        <button class="auth-submit" type="submit">
+          Entrar <span aria-hidden="true">→</span>
+        </button>
+      </form>
+      <p class="auth-switch">
+        Primeira vez aqui? <a href="{% url 'contas:cadastro' %}">Crie sua conta</a>
+      </p>
+    </section>
+  </div>
 {% endblock %}

@@ -2,70 +2,137 @@
 {% block title %}
   {{ aula.titulo }} · Aprenda+
 {% endblock %}
+{% block body_class %}
+  learning-page
+{% endblock %}
 {% block content %}
   <a class="back" href="{% url 'aprendizagem:curso' matricula.pk %}">← {{ matricula.compra.curso.titulo }}</a>
-  <section class="card lesson">
-    <p class="muted">
-      {{ aula.modulo.titulo }} · {{ aula.get_tipo_display }}
-      {% if concluida %}
-        · Concluída
-      {% endif %}
-    </p>
-    <h1>
-      {{ aula.titulo }}
-    </h1>
-    {% if aula.tipo == 'texto' %}
-      <div class="prose lesson-text">
-        {{ conteudo.texto|linebreaks }}
-      </div>
-    {% endif %}
-    {% if aula.tipo == 'video' %}
-      {% if conteudo.url_incorporacao %}
-        <iframe class="video" src="{{ conteudo.url_incorporacao }}" title="{{ aula.titulo }}" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin">
-        </iframe>
-      {% else %}
-        <video class="video" controls preload="metadata" src="{{ conteudo.url_video }}">
-          Abra o vídeo pelo link abaixo.
-        </video>
-      {% endif %}
-      <p>
-        <a href="{{ conteudo.url_video }}" target="_blank" rel="noopener noreferrer">Abrir vídeo em outra aba</a>
-        {% if conteudo.duracao_segundos %}
-          · {{ conteudo.duracao_segundos }} segundos
+  <div class="classroom">
+    <article class="lesson">
+      <header class="lesson-heading">
+        <p class="eyebrow">
+          {{ aula.modulo.titulo }} · {{ aula.get_tipo_display }}
+        </p>
+        <h1>
+          {{ aula.titulo }}
+        </h1>
+        {% if concluida %}
+          <span class="study-status complete">✓ Aula concluída</span>
         {% endif %}
-      </p>
-    {% endif %}
-    {% if form %}
-      <p>
-        A primeira resposta válida conclui esta aula. Cada envio registra uma tentativa e sua nota.
-      </p>
-      {% if not matricula.concluida_em %}
-        <form method="post" class="quiz">
-          {% csrf_token %}
-          {{ form.as_p }}<button>Enviar respostas</button>
-        </form>
+      </header>
+      {% if aula.tipo == 'video' %}
+        <div class="video-frame">
+          {% if conteudo.url_incorporacao %}
+            <iframe class="video" src="{{ conteudo.url_incorporacao }}" title="{{ aula.titulo }}" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin">
+            </iframe>
+          {% else %}
+            <video class="video" controls preload="metadata" src="{{ conteudo.url_video }}">
+              Abra o vídeo pelo link abaixo.
+            </video>
+          {% endif %}
+        </div>
+        <p class="video-note">
+          <a href="{{ conteudo.url_video }}" target="_blank" rel="noopener noreferrer">Abrir vídeo em outra aba ↗</a>
+          {% if conteudo.duracao_segundos %}
+            <span>{{ conteudo.duracao_segundos }} segundos</span>
+          {% endif %}
+        </p>
       {% endif %}
-      <h2>
-        Histórico de tentativas
-      </h2>
-      <ul class="lesson-list">
-        {% for tentativa in tentativas %}
-          <li>
-            <span>{{ tentativa.enviada_em|date:'d/m/Y H:i' }}</span><strong>{{ tentativa.nota }}/10</strong>
-          </li>
-        {% empty %}
-          <li>
-            Você ainda não enviou respostas.
-          </li>
-        {% endfor %}
-      </ul>
-    {% elif not concluida %}
-      <form method="post">
-        {% csrf_token %}
-        <button>Marcar aula como concluída</button>
-      </form>
-    {% else %}
-      <a class="button secondary" href="{% url 'aprendizagem:curso' matricula.pk %}">Voltar às aulas</a>
-    {% endif %}
-  </section>
+      {% if aula.tipo == 'texto' %}
+        <div class="prose lesson-text">
+          {{ conteudo.texto|linebreaks }}
+        </div>
+      {% endif %}
+      {% if form %}
+        <p class="quiz-intro">
+          Responda para concluir a aula. Você pode tentar novamente e acompanhar suas notas abaixo.
+        </p>
+        {% if not matricula.concluida_em %}
+          <form method="post" class="quiz">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            {% for campo in form %}
+              <fieldset class="quiz-question">
+                <legend>
+                  <span>{{ forloop.counter }}.</span> {{ campo.label }}
+                </legend>
+                {{ campo.errors }}{{ campo }}
+              </fieldset>
+            {% endfor %}
+            <button>
+              Enviar respostas <span aria-hidden="true">→</span>
+            </button>
+          </form>
+        {% endif %}
+        <section class="attempts">
+          <h2>
+            Suas tentativas
+          </h2>
+          <ul class="lesson-list">
+            {% for tentativa in tentativas %}
+              <li>
+                <span>{{ tentativa.enviada_em|date:'d/m/Y H:i' }}</span><strong>{{ tentativa.nota }}/10</strong>
+              </li>
+            {% empty %}
+              <li class="muted">
+                Suas notas aparecem aqui depois do primeiro envio.
+              </li>
+            {% endfor %}
+          </ul>
+        </section>
+      {% else %}
+        <div class="lesson-actions">
+          {% if not concluida %}
+            <form method="post">
+              {% csrf_token %}
+              <button>
+                Marcar aula como concluída <span aria-hidden="true">✓</span>
+              </button>
+            </form>
+          {% else %}
+            <a class="button secondary" href="{% url 'aprendizagem:curso' matricula.pk %}">Voltar às aulas <span aria-hidden="true">→</span></a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </article>
+    <aside class="classroom-sidebar">
+      <div class="sidebar-heading">
+        <h2>
+          Conteúdo do curso
+        </h2>
+        <div class="progress-label">
+          <span>Seu progresso</span><strong>{{ matricula.progresso }}%</strong>
+        </div>
+        <progress aria-label="Progresso do curso" value="{{ matricula.progresso }}" max="100">
+          {{ matricula.progresso }}%
+        </progress>
+      </div>
+      {% regroup aulas by modulo as grupos %}
+      {% for grupo in grupos %}
+        <details class="sidebar-module" {% if grupo.grouper.pk == aula.modulo_id %}open{% endif %}>
+          <summary>
+            {{ grupo.grouper.titulo }}<span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <ul>
+            {% for item in grupo.list %}
+              <li>
+                <a href="{% url 'aprendizagem:aula' matricula.pk item.pk %}" {% if item.pk == aula.pk %}aria-current="page"{% endif %}><span class="lesson-check {% if item.pk in concluidas %}checked{% endif %}" aria-hidden="true">
+                {% if item.pk in concluidas %}
+                  ✓
+                {% else %}
+                  {{ item.ordem }}
+                {% endif %}
+                </span><span>{{ item.titulo }}<small>{{ item.get_tipo_display }}
+                {% if item.pk in concluidas %}
+                  · Concluída
+                {% endif %}
+                </small></span></a>
+              </li>
+            {% endfor %}
+          </ul>
+        </details>
+      {% endfor %}
+      <a class="sidebar-back" href="{% url 'aprendizagem:curso' matricula.pk %}">Visão geral do curso ↗</a>
+    </aside>
+  </div>
 {% endblock %}

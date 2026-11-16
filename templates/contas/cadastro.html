@@ -1,18 +1,34 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}
   Criar conta · Aprenda+
 {% endblock %}
+{% block body_class %}
+  auth-page
+{% endblock %}
 {% block content %}
-  <section class="card auth-card">
-    <h1>
-      Crie sua conta
-    </h1>
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}<button type="submit">Cadastrar</button>
-    </form>
-    <p>
-      Já tem uma conta? <a href="{% url 'contas:login' %}">Entre aqui</a>
-    </p>
-  </section>
+  <div class="auth-layout registration-layout">
+    <aside class="auth-photo">
+      <img src="{% static 'images/estudos.jpg' %}" alt="Mesa preparada para uma sessão de estudos" width="1400" height="933">
+    </aside>
+    <section class="auth-card">
+      <a class="back" href="{% url 'cursos:catalogo' %}">← Voltar aos cursos</a>
+      <h1>
+        Seu próximo<br>passo começa aqui<span class="heading-dot">.</span>
+      </h1>
+      <p class="muted">
+        Crie sua conta para aprender ou compartilhar o que sabe.
+      </p>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="auth-submit" type="submit">
+          Criar minha conta <span aria-hidden="true">→</span>
+        </button>
+      </form>
+      <p class="auth-switch">
+        Já é de casa? <a href="{% url 'contas:login' %}">Entre na sua conta</a>
+      </p>
+    </section>
+  </div>
 {% endblock %}

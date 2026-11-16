@@ -4,25 +4,36 @@
 {% endblock %}
 {% block content %}
   <a class="back" href="{% url 'aprendizagem:painel' %}">← Meus estudos</a>
-  <h1>
-    {{ matricula.compra.curso.titulo }}
-  </h1>
-  <div class="two-columns">
-    <section>
+  <header class="study-header">
+    <p class="eyebrow">
+      MINHA APRENDIZAGEM
+    </p>
+    <h1>
+      {{ matricula.compra.curso.titulo }}
+    </h1>
+    <p>
+      Por {{ matricula.compra.curso.instrutor.nome }}
+    </p>
+  </header>
+  <div class="two-columns study-overview">
+    <section class="syllabus" aria-labelledby="suas-aulas">
+      <div class="section-heading">
+        <h2 id="suas-aulas">
+          Suas aulas
+        </h2>
+        <span class="muted">{{ matricula.total_aulas }} aula{{ matricula.total_aulas|pluralize }}</span>
+      </div>
       {% for modulo in modulos %}
-        <section class="card module">
-          <h2>
-            {{ modulo.ordem }}. {{ modulo.titulo }}
-          </h2>
-          <ul class="lesson-list">
+        <details class="module-accordion" open>
+          <summary>
+            <span class="module-number">{{ modulo.ordem|stringformat:'02d' }}</span><span>{{ modulo.titulo }}<small>{{ modulo.aulas.count }} aula{{ modulo.aulas.count|pluralize }}</small></span><span class="accordion-icon" aria-hidden="true"></span>
+          </summary>
+          <ul class="lesson-list study-lessons">
             {% for aula in modulo.aulas.all %}
               <li>
-                <div>
-                  <a href="{% url 'aprendizagem:aula' matricula.pk aula.pk %}">{{ aula.titulo }}</a><small class="muted">{{ aula.get_tipo_display }}</small>
-                </div>
-                <span class="status {% if aula.pk in concluidas %}done{% endif %}">
+                <span class="lesson-type-icon {{ aula.tipo }}" aria-hidden="true"></span><a href="{% url 'aprendizagem:aula' matricula.pk aula.pk %}">{{ aula.titulo }}<small>{{ aula.get_tipo_display }}</small></a><span class="status {% if aula.pk in concluidas %}done{% endif %}">
                 {% if aula.pk in concluidas %}
-                  Concluída
+                  ✓ Concluída
                 {% else %}
                   Pendente
                 {% endif %}
@@ -30,29 +41,40 @@
               </li>
             {% endfor %}
           </ul>
-        </section>
+        </details>
       {% endfor %}
     </section>
-    <aside class="card purchase-card">
+    <aside class="card progress-card">
+      <p class="eyebrow">
+        PASSO A PASSO
+      </p>
       <h2>
-        Seu progresso
+        Seu aprendizado<br>está acontecendo.
       </h2>
-      <label for="progresso">{{ matricula.progresso }}% concluído</label>
+      <div class="progress-label">
+        <label for="progresso">Progresso do curso</label><strong>{{ matricula.progresso }}%</strong>
+      </div>
       <progress id="progresso" value="{{ matricula.progresso }}" max="100">
         {{ matricula.progresso }}%
       </progress>
       {% if matricula.concluida_em %}
         <p>
-          Curso concluído em {{ matricula.concluida_em|date:'d/m/Y' }}.
+          Concluído em {{ matricula.concluida_em|date:'d/m/Y' }}. Seu certificado está pronto.
         </p>
-        <a class="button" href="{% url 'aprendizagem:certificado' matricula.certificado.codigo %}">Ver certificado</a>
+        <a class="button" href="{% url 'aprendizagem:certificado' matricula.certificado.codigo %}">Ver meu certificado ↗</a>
       {% else %}
-        <p>
+        <p class="muted">
           {{ matricula.pendencias }} de {{ matricula.total_aulas }} aulas pendentes.
+        </p>
+        <hr>
+        <p>
+          Ao terminar as aulas, solicite seu certificado de conclusão.
         </p>
         <form method="post" action="{% url 'aprendizagem:concluir' matricula.pk %}">
           {% csrf_token %}
-          <button>Concluir curso</button>
+          <button class="secondary">
+            Concluir curso <span aria-hidden="true">↗</span>
+          </button>
         </form>
       {% endif %}
     </aside>

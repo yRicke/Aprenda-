@@ -1,46 +1,131 @@
 {% extends 'base.html' %}
+{% load static cursos_ui %}
 {% block title %}
   Cursos · Aprenda+
 {% endblock %}
+{% block body_class %}
+  catalog-page
+{% endblock %}
 {% block content %}
-  <div class="page-heading">
-    <h1>
-      Catálogo de cursos
-    </h1>
-  </div>
-  <form class="search" method="get" role="search">
-    <label class="sr-only" for="busca">Buscar cursos</label>
-  <input id="busca" name="q" value="{{ busca }}" placeholder="O que você quer aprender?" type="search">
-  <button>Buscar</button>
-    {% if busca %}
-      <a href="{% url 'cursos:catalogo' %}">Limpar</a>
-    {% endif %}
-  </form>
-  <div class="course-grid">
-    {% for curso in cursos %}
-      <article class="card course-card">
+  {% if not busca %}
+    <section class="catalog-hero" aria-labelledby="titulo-inicio">
+      <div class="hero-copy">
+        <h1 id="titulo-inicio">
+          O que você quer<br><em>aprender</em> agora?
+        </h1>
+        <p>
+          Cursos para aprender no seu ritmo, praticar e seguir em frente.
+        </p>
+        <a class="button" href="#cursos">Encontre seu curso <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="hero-photo">
+        <img src="{% static 'images/estudos.jpg' %}" alt="Pessoa fazendo anotações em uma mesa de estudos" width="1400" height="933" fetchpriority="high">
+      </div>
+    </section>
+    <div class="learning-benefits" aria-label="Como funciona a Aprenda+">
+      <span><span class="benefit-symbol" aria-hidden="true">↗</span>Aulas no seu ritmo</span>
+      <span><span class="benefit-symbol" aria-hidden="true">✓</span>Prática com questionários</span>
+      <span><span class="benefit-symbol" aria-hidden="true">✳</span>Certificado de conclusão</span>
+    </div>
+  {% endif %}
+  <section id="cursos" class="catalog-section" aria-labelledby="titulo-catalogo">
+    <div class="catalog-heading">
+      <div>
+        <p class="eyebrow">
+          CATÁLOGO DE CURSOS
+        </p>
+        <h2 id="titulo-catalogo">
+          {% if busca %}
+            Resultados para “{{ busca }}”
+          {% else %}
+            Escolha por onde começar
+          {% endif %}
+        </h2>
         <p class="muted">
-          {{ curso.instrutor.nome }}
-        </p>
-        <h2>
-          <a href="{% url 'cursos:detalhe' curso.pk %}">{{ curso.titulo }}</a>
-        </h2>
-        <p>
-          {{ curso.descricao|truncatewords:28 }}
-        </p>
-        <div class="card-bottom">
-          <strong class="price">R$ {{ curso.preco|floatformat:2 }}</strong><a class="button secondary" href="{% url 'cursos:detalhe' curso.pk %}">Ver curso</a>
-        </div>
-      </article>
-    {% empty %}
-      <div class="card empty">
-        <h2>
-          Nenhum curso encontrado
-        </h2>
-        <p>
-          Consulte novamente após a publicação de novos cursos.
+          {{ cursos|length }} curso{{ cursos|length|pluralize }} {{ cursos|length|pluralize:'disponível,disponíveis' }}
         </p>
       </div>
-    {% endfor %}
-  </div>
+      <form class="sort-form" method="get" data-auto-submit>
+        {% if busca %}
+          <input type="hidden" name="q" value="{{ busca }}">
+        {% endif %}
+        <label for="ordenar">Ordenar por</label>
+        <select id="ordenar" name="ordenar">
+        <option value="recentes" {% if ordenacao == 'recentes' %}selected{% endif %}>Mais recentes</option>
+        <option value="menor_preco" {% if ordenacao == 'menor_preco' %}selected{% endif %}>Menor preço</option>
+        <option value="maior_preco" {% if ordenacao == 'maior_preco' %}selected{% endif %}>Maior preço</option>
+        </select>
+        <button class="secondary small" data-submit-fallback>
+          Aplicar
+        </button>
+      </form>
+    </div>
+    {% if busca %}
+      <a class="search-chip" href="{% url 'cursos:catalogo' %}">{{ busca }} <span aria-hidden="true">×</span><span class="sr-only">Limpar busca</span></a>
+    {% endif %}
+    <div class="course-grid catalog-grid">
+      {% for curso in cursos %}
+        <article class="course-card">
+          <a class="course-cover" href="{% url 'cursos:detalhe' curso.pk %}" tabindex="-1" aria-hidden="true"><img src="{{ curso|capa_curso }}" alt="" width="900" height="600" loading="lazy"></a>
+          <div class="course-card-body">
+            <div class="course-meta">
+              <span>{{ curso.quantidade_modulos }} módulo{{ curso.quantidade_modulos|pluralize }}</span><span>{{ curso.quantidade_aulas }} aula{{ curso.quantidade_aulas|pluralize }}</span>
+            </div>
+            <h3>
+              <a href="{% url 'cursos:detalhe' curso.pk %}">{{ curso.titulo }}</a>
+            </h3>
+            <p class="course-teacher">
+              Por {{ curso.instrutor.nome }}
+            </p>
+            <p class="course-description">
+              {{ curso.descricao|truncatewords:28 }}
+            </p>
+            <div class="card-bottom">
+              <div>
+                <span class="price">R$ {{ curso.preco|floatformat:2 }}</span><small>Pagamento único</small>
+              </div>
+              <a class="course-cta" href="{% url 'cursos:detalhe' curso.pk %}">Conhecer curso <span aria-hidden="true">↗</span></a>
+            </div>
+          </div>
+        </article>
+      {% empty %}
+        <div class="empty-state">
+          <span class="empty-symbol" aria-hidden="true">⌕</span>
+          <h3>
+            Nenhum curso por aqui ainda.
+          </h3>
+          <p>
+            {% if busca %}
+              Tente outro assunto ou procure pelo nome do curso.
+            {% else %}
+              Os cursos publicados pelos instrutores aparecerão aqui.
+            {% endif %}
+          </p>
+          {% if busca %}
+            <a class="button secondary" href="{% url 'cursos:catalogo' %}">Ver todos os cursos</a>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% if not user.is_authenticated or user.pode_instruir %}
+    <section class="teach-panel">
+      <div>
+        <p class="eyebrow">
+          PARA QUEM ENSINA
+        </p>
+        <h2>
+          O que você sabe pode<br>ser o começo de alguém.
+        </h2>
+        <p>
+          Organize suas aulas, publique seu curso e acompanhe seus alunos.
+        </p>
+      </div>
+      {% if user.pode_instruir %}
+        <a class="button secondary" href="{% url 'instrutor:criar' %}">Criar meu curso <span aria-hidden="true">↗</span></a>
+      {% else %}
+        <a class="button secondary" href="{% url 'contas:cadastro' %}">Quero ensinar <span aria-hidden="true">↗</span></a>
+      {% endif %}
+    </section>
+  {% endif %}
 {% endblock %}

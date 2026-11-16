@@ -6,7 +6,7 @@ from .models import Aula, AulaTexto, AulaVideo, Curso, Modulo, Questionario
 class CursoForm(forms.ModelForm):
     class Meta:
         model = Curso
-        fields = ('titulo', 'descricao', 'preco')
+        fields = ('titulo', 'descricao', 'preco', 'capa_url')
 
 
 class ModuloForm(forms.ModelForm):
