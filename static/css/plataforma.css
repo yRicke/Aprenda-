@@ -7,8 +7,6 @@
   --accent: #b8451d;
   --accent-hover: #923415;
   --ease: cubic-bezier(.2, 0, 0, 1);
-  --page-gutter: 24px;
-  --content-max: 1920px;
 }
 
 * {
@@ -169,8 +167,7 @@ summary::-webkit-details-marker {
 }
 
 .container {
-  width: calc(100% - var(--page-gutter) - var(--page-gutter));
-  max-width: var(--content-max);
+  width: min(1280px, calc(100% - 80px));
   margin-inline: auto;
 }
 
@@ -303,10 +300,10 @@ main.container {
   grid-template-columns: auto minmax(180px, 1fr) auto auto;
   align-items: center;
   gap: 30px;
-  max-width: calc(var(--content-max) + var(--page-gutter) + var(--page-gutter));
+  max-width: 1440px;
   min-height: 90px;
   margin: auto;
-  padding: 18px var(--page-gutter);
+  padding: 18px 40px;
 }
 
 .brand {
@@ -1748,7 +1745,7 @@ form p {
 }
 
 .auth-page main.container {
-  max-width: 1480px;
+  max-width: 1100px;
   padding-top: 42px;
   padding-bottom: 64px;
 }
@@ -2147,12 +2144,12 @@ form p {
 }
 
 @media (max-width: 1100px) {
-  :root {
-    --page-gutter: 20px;
+  .container {
+    width: calc(100% - 60px);
   }
   .header-inner {
     gap: 22px;
-    padding-inline: var(--page-gutter);
+    padding-inline: 30px;
   }
   .desktop-nav {
     gap: 18px;
@@ -2288,8 +2285,8 @@ form p {
 }
 
 @media (max-width: 700px) {
-  :root {
-    --page-gutter: 14px;
+  .container {
+    width: calc(100% - 36px);
   }
   .site-header {
     position: relative;
@@ -2304,7 +2301,7 @@ form p {
   .header-inner {
     grid-template-columns: 1fr auto;
     gap: 16px;
-    padding: 16px var(--page-gutter);
+    padding: 16px 18px;
   }
   .brand {
     font-size: 28px;

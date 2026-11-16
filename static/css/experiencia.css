@@ -754,7 +754,7 @@ body:has(.course-dialog[open]) {
 }
 
 .focus-mode main.container {
-  max-width: 1280px;
+  max-width: 1060px;
   padding-top: 20px;
 }
 
@@ -772,7 +772,7 @@ body:has(.course-dialog[open]) {
 }
 
 .focus-mode .lesson {
-  padding: 40px;
+  padding: 48px 64px;
 }
 
 .focus-mode .lesson-text {
