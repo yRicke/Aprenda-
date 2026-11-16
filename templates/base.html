@@ -4,13 +4,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#f6f5f0">
+    <meta name="theme-color" content="#14231b">
     <title>
       {% block title %}
         Aprenda+
       {% endblock %}
     </title>
     <link rel="preload" href="{% static 'fonts/aprenda-0.woff2' %}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{% static 'fonts/barlow-condensed-700.woff2' %}" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
     <link rel="stylesheet" href="{% static 'css/plataforma.css' %}">
     <link rel="stylesheet" href="{% static 'css/experiencia.css' %}">
@@ -115,7 +116,7 @@
         <div>
           <a class="brand" href="{% url 'cursos:catalogo' %}">aprenda<span>+</span></a>
           <p>
-            Um espaço para aprender e compartilhar.
+            Cursos online. Conhecimento em movimento.
           </p>
         </div>
         <nav aria-label="Navegação do rodapé">
@@ -124,6 +125,9 @@
             <a href="{% url 'aprendizagem:painel' %}">Meus estudos <span aria-hidden="true">↗</span></a>
           {% else %}
             <a href="{% url 'contas:cadastro' %}">Faça parte <span aria-hidden="true">↗</span></a>
+          {% endif %}
+          {% if user.pode_instruir %}
+            <a href="{% url 'instrutor:painel_instrutor' %}">Área do instrutor <span aria-hidden="true">↗</span></a>
           {% endif %}
         </nav>
         <small>Aprenda+ ·
