@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}
+  {{ curso.titulo }} · Aprenda+
+{% endblock %}
+{% block content %}
+  <a class="back" href="{% url 'cursos:catalogo' %}">← Catálogo de cursos</a>
+  <div class="two-columns">
+    <section>
+      <h1>
+        {{ curso.titulo }}
+      </h1>
+      <p class="muted">
+        Por {{ curso.instrutor.nome }}
+      </p>
+      <div class="prose">
+        {{ curso.descricao|linebreaks }}
+      </div>
+      <h2>
+        Conteúdo do curso
+      </h2>
+      {% for modulo in modulos %}
+        <section class="card module">
+          <h3>
+            {{ modulo.ordem }}. {{ modulo.titulo }}
+          </h3>
+          <ul class="lesson-list">
+            {% for aula in modulo.aulas.all %}
+              <li>
+                <span>{{ aula.titulo }}</span><span class="muted">{{ aula.get_tipo_display }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        </section>
+      {% endfor %}
+    </section>
+    <aside class="card purchase-card">
+      <p class="price">
+        R$ {{ curso.preco|floatformat:2 }}
+      </p>
+      {% if matricula %}
+        <a class="button" href="{% url 'aprendizagem:curso' matricula.pk %}">Acessar meu curso</a>
+      {% else %}
+        <a class="button" href="{% url 'compras:checkout' curso.pk %}">Comprar curso</a>
+        <p class="muted">
+          Acesso liberado após a autorização do pagamento.
+        </p>
+      {% endif %}
+    </aside>
+  </div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}
+  Meus estudos · Aprenda+
+{% endblock %}
+{% block content %}
+  <div class="page-heading">
+    <h1>
+      Meus estudos
+    </h1>
+    <a href="{% url 'cursos:catalogo' %}">Explorar cursos</a>
+  </div>
+  <div class="course-grid">
+    {% for matricula in matriculas %}
+      <article class="card course-card">
+        <p class="muted">
+          {% if matricula.concluida_em %}
+            Concluído em {{ matricula.concluida_em|date:'d/m/Y' }}
+          {% else %}
+            Em andamento
+          {% endif %}
+        </p>
+        <h2>
+          {{ matricula.compra.curso.titulo }}
+        </h2>
+        <label for="progresso-{{ matricula.pk }}">{{ matricula.progresso }}% concluído</label>
+        <progress id="progresso-{{ matricula.pk }}" value="{{ matricula.progresso }}" max="100">
+          {{ matricula.progresso }}%
+        </progress>
+        <div class="card-bottom">
+          <a class="button" href="{% url 'aprendizagem:curso' matricula.pk %}">Acessar curso</a>
+          {% if matricula.concluida_em %}
+            <a href="{% url 'aprendizagem:certificado' matricula.certificado.codigo %}">Certificado</a>
+          {% endif %}
+        </div>
+      </article>
+    {% empty %}
+      <section class="card empty">
+        <h2>
+          Seus estudos começam aqui
+        </h2>
+        <p>
+          Após comprar um curso, você acompanha as aulas e o progresso nesta página.
+        </p>
+        <a class="button" href="{% url 'cursos:catalogo' %}">Encontrar um curso</a>
+      </section>
+    {% endfor %}
+  </div>
+{% endblock %}

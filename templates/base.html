@@ -1,0 +1,60 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
+    {% block title %}
+      Aprenda+
+    {% endblock %}
+    </title>
+  <link rel="stylesheet" href="{% static 'css/plataforma.css' %}">
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="{% url 'cursos:catalogo' %}">Aprenda<span>+</span></a>
+        <nav aria-label="Navegação principal">
+          <a href="{% url 'cursos:catalogo' %}">Cursos</a>
+          {% if user.is_authenticated %}
+            <a href="{% url 'aprendizagem:painel' %}">Meus estudos</a>
+            {% if user.pode_instruir %}
+              <a href="{% url 'instrutor:painel_instrutor' %}">Área do instrutor</a>
+            {% endif %}
+            {% if user.is_staff %}
+              <a href="{% url 'admin:index' %}">Administração</a>
+            {% endif %}
+            <span class="user-name">{{ user.nome }}</span>
+            <form method="post" action="{% url 'contas:logout' %}">
+              {% csrf_token %}
+              <button class="text-button">Sair</button>
+            </form>
+          {% else %}
+            <a href="{% url 'contas:login' %}">Entrar</a>
+          <a class="button small" href="{% url 'contas:cadastro' %}">Criar conta</a>
+          {% endif %}
+        </nav>
+      </div>
+    </header>
+    <main id="conteudo" class="container">
+      {% if messages %}
+        <div class="messages" aria-live="polite">
+          {% for message in messages %}
+            <div role="status" class="message {{ message.tags }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}
+      {% endblock %}
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        Aprenda+ · Plataforma de cursos online
+      </div>
+    </footer>
+  </body>
+</html>

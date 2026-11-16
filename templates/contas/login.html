@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}
+  Entrar · Aprenda+
+{% endblock %}
+{% block content %}
+  <section class="card auth-card">
+    <h1>
+      Entrar na Aprenda+
+    </h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      {% if next %}
+        <input type="hidden" name="next" value="{{ next }}">
+      {% endif %}
+      <button type="submit">Entrar</button>
+    </form>
+    <p>
+      Ainda precisa de uma conta? <a href="{% url 'contas:cadastro' %}">Cadastre-se</a>
+    </p>
+  </section>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}
+  {{ titulo }} · Aprenda+
+{% endblock %}
+{% block content %}
+  {% if curso %}
+    <a class="back" href="{% url 'instrutor:gerenciar' curso.pk %}">← {{ curso.titulo }}</a>
+  {% else %}
+    <a class="back" href="{% url 'instrutor:painel_instrutor' %}">← Área do instrutor</a>
+  {% endif %}
+  <section class="card form-card">
+    <h1>
+      {{ titulo }}
+    </h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}<button>Salvar</button>
+    </form>
+  </section>
+{% endblock %}

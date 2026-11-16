@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}
+  Área do instrutor · Aprenda+
+{% endblock %}
+{% block content %}
+  <div class="page-heading">
+    <h1>
+      Área do instrutor
+    </h1>
+    <a class="button" href="{% url 'instrutor:criar' %}">Criar curso</a>
+  </div>
+  <div class="course-grid">
+    {% for curso in cursos %}
+      <article class="card course-card">
+        <p class="muted">
+          {% if curso.publicado %}
+            Publicado
+          {% else %}
+            Rascunho
+          {% endif %}
+          · {{ curso.compras.count }} compra(s)
+        </p>
+        <h2>
+          {{ curso.titulo }}
+        </h2>
+        <div class="card-bottom">
+          <strong>R$ {{ curso.preco|floatformat:2 }}</strong><a class="button secondary" href="{% url 'instrutor:gerenciar' curso.pk %}">Gerenciar</a>
+        </div>
+      </article>
+    {% empty %}
+      <p>
+        Crie um curso e adicione seus módulos e aulas.
+      </p>
+    {% endfor %}
+  </div>
+  <h2>
+    Avisos de conclusão
+  </h2>
+  <section class="card">
+    <ul class="lesson-list">
+      {% for aviso in avisos %}
+        <li>
+          <div>
+            <strong>{{ aviso.matricula.compra.aluno.nome }}</strong> concluiu {{ aviso.matricula.compra.curso.titulo }}<small class="muted">{{ aviso.publicado_em|date:'d/m/Y H:i' }}</small>
+          </div>
+          {% if aviso.lido_em %}
+            <span class="muted">Lido</span>
+          {% else %}
+            <form method="post" action="{% url 'instrutor:ler_aviso' aviso.pk %}">
+              {% csrf_token %}
+              <button class="secondary small">Marcar como lido</button>
+            </form>
+          {% endif %}
+        </li>
+      {% empty %}
+        <li>
+          Os avisos aparecerão quando um aluno concluir um de seus cursos.
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endblock %}

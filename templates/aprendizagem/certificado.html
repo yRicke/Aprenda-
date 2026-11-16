@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}
+  Certificado · Aprenda+
+{% endblock %}
+{% block content %}
+  <div class="page-heading no-print">
+    <a href="{% url 'aprendizagem:painel' %}">← Meus estudos</a><button onclick="window.print()">Imprimir / salvar como PDF</button>
+  </div>
+  <article class="certificate">
+    <p class="certificate-brand">
+      Aprenda+
+    </p>
+    <h1>
+      Certificado de conclusão
+    </h1>
+    <p>
+      Certificamos que
+    </p>
+    <h2>
+      {{ certificado.matricula.compra.aluno.nome }}
+    </h2>
+    <p>
+      concluiu todas as aulas do curso
+    </p>
+    <h3>
+      {{ certificado.matricula.compra.curso.titulo }}
+    </h3>
+    <p>
+      em {{ certificado.emitido_em|date:'d \d\e F \d\e Y' }}.
+    </p>
+    <p>
+      Instrutor responsável · {{ certificado.matricula.compra.curso.instrutor.nome }}
+    </p>
+    <p class="muted certificate-code">
+      Código {{ certificado.codigo }}
+    </p>
+  </article>
+{% endblock %}

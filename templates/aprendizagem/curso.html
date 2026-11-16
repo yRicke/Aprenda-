@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}
+  {{ matricula.compra.curso.titulo }} · Meus estudos
+{% endblock %}
+{% block content %}
+  <a class="back" href="{% url 'aprendizagem:painel' %}">← Meus estudos</a>
+  <h1>
+    {{ matricula.compra.curso.titulo }}
+  </h1>
+  <div class="two-columns">
+    <section>
+      {% for modulo in modulos %}
+        <section class="card module">
+          <h2>
+            {{ modulo.ordem }}. {{ modulo.titulo }}
+          </h2>
+          <ul class="lesson-list">
+            {% for aula in modulo.aulas.all %}
+              <li>
+                <div>
+                  <a href="{% url 'aprendizagem:aula' matricula.pk aula.pk %}">{{ aula.titulo }}</a><small class="muted">{{ aula.get_tipo_display }}</small>
+                </div>
+                <span class="status {% if aula.pk in concluidas %}done{% endif %}">
+                {% if aula.pk in concluidas %}
+                  Concluída
+                {% else %}
+                  Pendente
+                {% endif %}
+                </span>
+              </li>
+            {% endfor %}
+          </ul>
+        </section>
+      {% endfor %}
+    </section>
+    <aside class="card purchase-card">
+      <h2>
+        Seu progresso
+      </h2>
+      <label for="progresso">{{ matricula.progresso }}% concluído</label>
+      <progress id="progresso" value="{{ matricula.progresso }}" max="100">
+        {{ matricula.progresso }}%
+      </progress>
+      {% if matricula.concluida_em %}
+        <p>
+          Curso concluído em {{ matricula.concluida_em|date:'d/m/Y' }}.
+        </p>
+        <a class="button" href="{% url 'aprendizagem:certificado' matricula.certificado.codigo %}">Ver certificado</a>
+      {% else %}
+        <p>
+          {{ matricula.pendencias }} de {{ matricula.total_aulas }} aulas pendentes.
+        </p>
+        <form method="post" action="{% url 'aprendizagem:concluir' matricula.pk %}">
+          {% csrf_token %}
+          <button>Concluir curso</button>
+        </form>
+      {% endif %}
+    </aside>
+  </div>
+{% endblock %}

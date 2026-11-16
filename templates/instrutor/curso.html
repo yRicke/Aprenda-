@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}
+  Gerenciar {{ curso.titulo }} · Aprenda+
+{% endblock %}
+{% block content %}
+  <a class="back" href="{% url 'instrutor:painel_instrutor' %}">← Área do instrutor</a>
+  <h1>
+    {{ curso.titulo }}
+  </h1>
+  <p class="muted">
+    {% if curso.publicado %}
+      Publicado
+    {% else %}
+      Rascunho
+    {% endif %}
+    · R$ {{ curso.preco|floatformat:2 }}
+  </p>
+  <div class="actions">
+    <a class="button secondary" href="{% url 'instrutor:editar' curso.pk %}">Editar dados</a>
+    <form method="post" action="{% url 'instrutor:publicar' curso.pk %}">
+      {% csrf_token %}
+      <button>
+      {% if curso.publicado %}
+        Despublicar
+      {% else %}
+        Publicar curso
+      {% endif %}
+      </button>
+    </form>
+    {% if not curso.estrutura_bloqueada %}
+      <a class="button danger" href="{% url 'instrutor:excluir' curso.pk %}">Excluir curso</a>
+    {% endif %}
+  </div>
+  {% if curso.estrutura_bloqueada %}
+    <p class="message">
+      A estrutura das aulas está fixa porque este curso possui compra confirmada.
+    </p>
+  {% else %}
+    <p>
+      A publicação exige pelo menos um módulo e uma aula em cada módulo.
+    </p>
+    <a class="button secondary" href="{% url 'instrutor:modulo_criar' curso.pk %}">Adicionar módulo</a>
+  {% endif %}
+  {% for modulo in modulos %}
+    <section class="card module">
+      <div class="page-heading">
+        <h2>
+          {{ modulo.ordem }}. {{ modulo.titulo }}
+        </h2>
+        {% if not curso.estrutura_bloqueada %}
+          <div class="actions">
+            <a href="{% url 'instrutor:modulo_editar' curso.pk modulo.pk %}">Editar</a><a class="danger-link" href="{% url 'instrutor:modulo_excluir' curso.pk modulo.pk %}">Excluir</a>
+          </div>
+        {% endif %}
+      </div>
+      <ul class="lesson-list">
+        {% for aula in modulo.aulas.all %}
+          <li>
+            <div>
+              {{ aula.ordem }}. {{ aula.titulo }}<small class="muted">{{ aula.get_tipo_display }}</small>
+            </div>
+            {% if not curso.estrutura_bloqueada %}
+              <div class="actions">
+                <a href="{% url 'instrutor:aula_editar' modulo.pk aula.pk %}">Editar</a><a class="danger-link" href="{% url 'instrutor:aula_excluir' curso.pk aula.pk %}">Excluir</a>
+              </div>
+            {% endif %}
+          </li>
+        {% empty %}
+          <li>
+            Adicione a primeira aula deste módulo.
+          </li>
+        {% endfor %}
+      </ul>
+      {% if not curso.estrutura_bloqueada %}
+        <div class="actions">
+          <a href="{% url 'instrutor:aula_criar' modulo.pk 'texto' %}">Adicionar texto</a><a href="{% url 'instrutor:aula_criar' modulo.pk 'video' %}">Adicionar vídeo</a><a href="{% url 'instrutor:aula_criar' modulo.pk 'questionario' %}">Adicionar questionário</a>
+        </div>
+      {% endif %}
+    </section>
+  {% empty %}
+    <p>
+      Nenhum módulo cadastrado.
+    </p>
+  {% endfor %}
+{% endblock %}

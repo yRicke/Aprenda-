@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}
+  Confirmar exclusão · Aprenda+
+{% endblock %}
+{% block content %}
+  <section class="card form-card">
+    <h1>
+      Confirmar exclusão
+    </h1>
+    <p>
+      Deseja excluir <strong>{{ objeto }}</strong> e seu conteúdo?
+    </p>
+    <div class="actions">
+      <form method="post">
+        {% csrf_token %}
+        <button class="danger">Excluir</button>
+      </form>
+      <a href="{% url 'instrutor:gerenciar' curso.pk %}">Cancelar</a>
+    </div>
+  </section>
+{% endblock %}

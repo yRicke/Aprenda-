@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}
+  {{ aula.titulo }} · Aprenda+
+{% endblock %}
+{% block content %}
+  <a class="back" href="{% url 'aprendizagem:curso' matricula.pk %}">← {{ matricula.compra.curso.titulo }}</a>
+  <section class="card lesson">
+    <p class="muted">
+      {{ aula.modulo.titulo }} · {{ aula.get_tipo_display }}
+      {% if concluida %}
+        · Concluída
+      {% endif %}
+    </p>
+    <h1>
+      {{ aula.titulo }}
+    </h1>
+    {% if aula.tipo == 'texto' %}
+      <div class="prose lesson-text">
+        {{ conteudo.texto|linebreaks }}
+      </div>
+    {% endif %}
+    {% if aula.tipo == 'video' %}
+      {% if conteudo.url_incorporacao %}
+        <iframe class="video" src="{{ conteudo.url_incorporacao }}" title="{{ aula.titulo }}" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin">
+        </iframe>
+      {% else %}
+        <video class="video" controls preload="metadata" src="{{ conteudo.url_video }}">
+          Abra o vídeo pelo link abaixo.
+        </video>
+      {% endif %}
+      <p>
+        <a href="{{ conteudo.url_video }}" target="_blank" rel="noopener noreferrer">Abrir vídeo em outra aba</a>
+        {% if conteudo.duracao_segundos %}
+          · {{ conteudo.duracao_segundos }} segundos
+        {% endif %}
+      </p>
+    {% endif %}
+    {% if form %}
+      <p>
+        A primeira resposta válida conclui esta aula. Cada envio registra uma tentativa e sua nota.
+      </p>
+      {% if not matricula.concluida_em %}
+        <form method="post" class="quiz">
+          {% csrf_token %}
+          {{ form.as_p }}<button>Enviar respostas</button>
+        </form>
+      {% endif %}
+      <h2>
+        Histórico de tentativas
+      </h2>
+      <ul class="lesson-list">
+        {% for tentativa in tentativas %}
+          <li>
+            <span>{{ tentativa.enviada_em|date:'d/m/Y H:i' }}</span><strong>{{ tentativa.nota }}/10</strong>
+          </li>
+        {% empty %}
+          <li>
+            Você ainda não enviou respostas.
+          </li>
+        {% endfor %}
+      </ul>
+    {% elif not concluida %}
+      <form method="post">
+        {% csrf_token %}
+        <button>Marcar aula como concluída</button>
+      </form>
+    {% else %}
+      <a class="button secondary" href="{% url 'aprendizagem:curso' matricula.pk %}">Voltar às aulas</a>
+    {% endif %}
+  </section>
+{% endblock %}

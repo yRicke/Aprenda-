@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+  <section class="card empty">
+    <h1>
+      Página não encontrada
+    </h1>
+    <p>
+      Confira o endereço ou retorne ao catálogo.
+    </p>
+    <a href="{% url 'cursos:catalogo' %}">Voltar aos cursos</a>
+  </section>
+{% endblock %}

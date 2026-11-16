@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}
+  Cursos · Aprenda+
+{% endblock %}
+{% block content %}
+  <div class="page-heading">
+    <h1>
+      Catálogo de cursos
+    </h1>
+  </div>
+  <form class="search" method="get" role="search">
+    <label class="sr-only" for="busca">Buscar cursos</label>
+  <input id="busca" name="q" value="{{ busca }}" placeholder="O que você quer aprender?" type="search">
+  <button>Buscar</button>
+    {% if busca %}
+      <a href="{% url 'cursos:catalogo' %}">Limpar</a>
+    {% endif %}
+  </form>
+  <div class="course-grid">
+    {% for curso in cursos %}
+      <article class="card course-card">
+        <p class="muted">
+          {{ curso.instrutor.nome }}
+        </p>
+        <h2>
+          <a href="{% url 'cursos:detalhe' curso.pk %}">{{ curso.titulo }}</a>
+        </h2>
+        <p>
+          {{ curso.descricao|truncatewords:28 }}
+        </p>
+        <div class="card-bottom">
+          <strong class="price">R$ {{ curso.preco|floatformat:2 }}</strong><a class="button secondary" href="{% url 'cursos:detalhe' curso.pk %}">Ver curso</a>
+        </div>
+      </article>
+    {% empty %}
+      <div class="card empty">
+        <h2>
+          Nenhum curso encontrado
+        </h2>
+        <p>
+          Consulte novamente após a publicação de novos cursos.
+        </p>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

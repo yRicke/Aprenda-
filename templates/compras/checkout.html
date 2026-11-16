@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}
+  Comprar curso · Aprenda+
+{% endblock %}
+{% block content %}
+  <a class="back" href="{% url 'cursos:detalhe' curso.pk %}">← Voltar ao curso</a>
+  <h1>
+    Comprar curso
+  </h1>
+  <div class="two-columns">
+    <section class="card">
+      <h2>
+        {{ curso.titulo }}
+      </h2>
+      {% if pendente %}
+        <div class="message warning">
+          Há um pagamento aguardando confirmação. Consulte o estado para continuar.
+        </div>
+        <form method="post" action="{% url 'compras:consultar' pendente.pk %}">
+          {% csrf_token %}
+          <button>Consultar pagamento</button>
+        </form>
+      {% else %}
+        <form method="post">
+          {% csrf_token %}
+          {{ form.non_field_errors }}{{ form.oferta }}
+          <p>
+            {{ form.cupom.label_tag }}{{ form.cupom }}{{ form.cupom.errors }}
+          </p>
+          <button class="secondary" name="acao" value="aplicar">Aplicar cupom</button>
+          <p>
+            {{ form.token.label_tag }}{{ form.token }}{{ form.token.errors }}
+          </p>
+          <p class="muted">
+            Ambiente de demonstração. Os pagamentos são simulados.
+          </p>
+          <button name="acao" value="comprar">Confirmar compra de R$ {{ valor|floatformat:2 }}</button>
+        </form>
+      {% endif %}
+    </section>
+    <aside class="card purchase-card">
+      <h2>
+        Resumo da compra
+      </h2>
+      <dl class="summary">
+        <dt>
+          Preço
+        </dt>
+        <dd>
+          R$ {{ curso.preco|floatformat:2 }}
+        </dd>
+        <dt>
+          Desconto
+          {% if cupom %}
+            · {{ cupom.codigo }}
+          {% endif %}
+        </dt>
+        <dd>
+          R$ {{ desconto|floatformat:2 }}
+        </dd>
+        <dt>
+          <strong>Total</strong>
+        </dt>
+        <dd>
+          <strong>R$ {{ valor|floatformat:2 }}</strong>
+        </dd>
+      </dl>
+    </aside>
+  </div>
+{% endblock %}
