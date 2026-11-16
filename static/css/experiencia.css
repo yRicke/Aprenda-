@@ -3,7 +3,7 @@
   padding: 1px 6px;
   border: 1px solid #d8ded0;
   border-radius: 3px;
-  color: #727b67;
+  color: #5b6252;
   font: 11px 'DM Sans', sans-serif;
 }
 
@@ -21,7 +21,7 @@
 .hero-copy .hero-footnote {
   max-width: none;
   margin: 38px 0 0;
-  color: #68715f;
+  color: #535a4c;
   font-size: 11px;
 }
 
@@ -66,7 +66,7 @@
 .hero-feature small {
   display: block;
   margin-bottom: 6px;
-  color: #5c6a50;
+  color: #4a5540;
   font-size: 9px;
   letter-spacing: .12em;
 }
@@ -81,7 +81,7 @@
 
 .hero-feature-arrow {
   margin-left: auto;
-  color: #495b3d;
+  color: #3a4931;
   font-size: 29px;
   transition: transform 180ms var(--ease);
 }
@@ -111,12 +111,13 @@
 
 .format-filters a {
   padding: 8px 17px;
-  border: 1px solid transparent;
+  border: 1px solid #b7c6ad;
   border-radius: 30px;
-  color: #66715b;
+  color: #525a49;
   font-size: 12px;
   text-decoration: none;
   white-space: nowrap;
+  background: #ffffff;
 }
 
 .format-filters a:hover {
@@ -124,8 +125,9 @@
 }
 
 .format-filters a[aria-current] {
-  background: #2c4335;
+  background: #183d28;
   color: #f4f5ed;
+  border-color: #183d28;
 }
 
 .view-controls {
@@ -144,13 +146,13 @@
   padding: 5px;
   border: 1px solid transparent;
   background: transparent;
-  color: #6d785f;
+  color: #57604c;
 }
 
 .view-controls button[aria-pressed=true] {
-  border-color: #d5ddc9;
-  background: #edf1e7;
-  color: #334f27;
+  border-color: #8da180;
+  background: #dce7d3;
+  color: #293f1f;
 }
 
 .course-card-actions {
@@ -167,7 +169,7 @@
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: #596b4c;
+  color: #47563d;
   font-size: 11px;
   font-weight: 500;
 }
@@ -237,7 +239,7 @@ body:has(.course-dialog[open]) {
   border: 1px solid #d5ddcb;
   border-radius: 50%;
   background: #f9faf4;
-  color: #586c48;
+  color: #46563a;
   font-size: 23px;
   font-weight: 400;
 }
@@ -269,15 +271,15 @@ body:has(.course-dialog[open]) {
 
 .preview-content h2 {
   padding-right: 20px;
-  font-family: 'Instrument Serif', serif;
-  font-size: 38px;
-  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 31px;
+  font-weight: 600;
   line-height: 1.06;
 }
 
 .preview-description {
   margin-bottom: 28px;
-  color: #647258;
+  color: #505b46;
   font-size: 12px;
   line-height: 1.85;
 }
@@ -297,7 +299,7 @@ body:has(.course-dialog[open]) {
   justify-content: space-between;
   gap: 16px;
   padding: 15px 0;
-  color: #526944;
+  color: #425436;
   font-size: 12px;
   font-weight: 500;
 }
@@ -313,13 +315,13 @@ body:has(.course-dialog[open]) {
   justify-content: space-between;
   gap: 20px;
   padding: 7px 0;
-  color: #637557;
+  color: #4f5e46;
   font-size: 11px;
 }
 
 .preview-curriculum small {
   flex-shrink: 0;
-  color: #68785c;
+  color: #53604a;
   font-size: 10px;
 }
 
@@ -345,14 +347,15 @@ body:has(.course-dialog[open]) {
 
 /* Retomada e atividade pessoal */
 .dashboard-page .dashboard-heading h1 {
-  font-family: 'Instrument Serif', serif;
-  font-size: clamp(42px, 5vw, 66px);
-  font-weight: 400;
-  line-height: 1.02;
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(36px, 4vw, 58px);
+  font-weight: 700;
+  line-height: 1.1;
 }
 
 .dashboard-page .dashboard-heading h1 em {
-  color: #7a895f;
+  color: #2b543f;
+  font-style: normal;
 }
 
 .learning-summary {
@@ -369,7 +372,7 @@ body:has(.course-dialog[open]) {
   min-height: 305px;
   overflow: hidden;
   border-radius: 10px;
-  background: #2a4336;
+  background: #173d2b;
   color: #f2f4e8;
 }
 
@@ -391,9 +394,9 @@ body:has(.course-dialog[open]) {
 .resume-content h2 {
   margin-bottom: 22px;
   padding-right: 45px;
-  font-family: 'Instrument Serif', serif;
-  font-size: 35px;
-  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 28px;
+  font-weight: 600;
   line-height: 1.08;
 }
 
@@ -413,6 +416,7 @@ body:has(.course-dialog[open]) {
   min-height: 43px;
   padding: 10px 18px;
   font-size: 12px;
+  border-color: #f39b6c;
 }
 
 .resume-progress {
@@ -488,14 +492,14 @@ body:has(.course-dialog[open]) {
 }
 
 .activity-total strong {
-  font-family: 'Instrument Serif', serif;
-  font-size: 59px;
-  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 48px;
+  font-weight: 700;
   line-height: 1;
 }
 
 .activity-total > span {
-  color: #60744f;
+  color: #4d5d3f;
   font-size: 11px;
   line-height: 1.7;
 }
@@ -518,7 +522,7 @@ body:has(.course-dialog[open]) {
 }
 
 .weekday {
-  color: #5b6c4e;
+  color: #49563e;
   font-size: 9px;
   text-transform: uppercase;
 }
@@ -531,7 +535,7 @@ body:has(.course-dialog[open]) {
   height: 30px;
   border: 1px solid transparent;
   border-radius: 50%;
-  color: #5c6f4b;
+  color: #4a593c;
   font-size: 10px;
 }
 
@@ -547,7 +551,7 @@ body:has(.course-dialog[open]) {
 
 .activity-note {
   margin: 24px 0 0;
-  color: #687a58;
+  color: #536246;
   font-size: 10px;
 }
 
@@ -575,15 +579,16 @@ body:has(.course-dialog[open]) {
 }
 
 .study-statistics dt {
-  color: #637355;
+  color: #4f5c44;
   font-size: 12px;
 }
 
 .study-statistics dd {
   margin: 0;
-  font-family: 'Instrument Serif', serif;
-  font-size: 34px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 28px;
   line-height: 1;
+  font-weight: 700;
 }
 
 .library-section > h2 {
@@ -612,15 +617,15 @@ body:has(.course-dialog[open]) {
 }
 
 .first-course h2 {
-  font-family: 'Instrument Serif', serif;
-  font-size: 50px;
-  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 40px;
+  font-weight: 600;
   line-height: 1.06;
 }
 
 .first-course p:not(.eyebrow) {
   max-width: 380px;
-  color: #647756;
+  color: #505f45;
   font-size: 13px;
 }
 
@@ -659,10 +664,10 @@ body:has(.course-dialog[open]) {
   min-height: 35px;
   padding: 6px;
   background: transparent;
-  color: #637953;
-  font-family: 'Instrument Serif', serif;
-  font-size: 18px;
-  font-weight: 400;
+  color: #4f6142;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .reading-controls button:hover {
@@ -680,7 +685,7 @@ body:has(.course-dialog[open]) {
   padding: 8px 12px;
   border: 1px solid #cdd8bf;
   background: transparent;
-  color: #567044;
+  color: #455a36;
   font-size: 11px;
   font-weight: 500;
 }
@@ -714,7 +719,7 @@ body:has(.course-dialog[open]) {
   display: flex;
   align-items: center;
   gap: 16px;
-  color: #5e774c;
+  color: #4b5f3d;
   font-size: 12px;
   text-decoration: none;
 }
@@ -730,7 +735,7 @@ body:has(.course-dialog[open]) {
 .lesson-pagination small {
   display: block;
   margin-bottom: 6px;
-  color: #5b6e4b;
+  color: #49583c;
   font-size: 8px;
   letter-spacing: .1em;
 }
@@ -749,7 +754,7 @@ body:has(.course-dialog[open]) {
 }
 
 .focus-mode main.container {
-  max-width: 1060px;
+  max-width: 1280px;
   padding-top: 20px;
 }
 
@@ -767,7 +772,7 @@ body:has(.course-dialog[open]) {
 }
 
 .focus-mode .lesson {
-  padding: 48px 64px;
+  padding: 40px;
 }
 
 .focus-mode .lesson-text {
@@ -779,7 +784,7 @@ body:has(.course-dialog[open]) {
   margin: -8px 0 18px;
   padding: 4px 0;
   background: transparent;
-  color: #63794e;
+  color: #4f613e;
   font-size: 11px;
   font-weight: 400;
 }
@@ -971,7 +976,7 @@ body:has(.course-dialog[open]) {
     right: 12px;
   }
   .dashboard-page .dashboard-heading h1 {
-    font-size: 46px;
+    font-size: 36px;
   }
   .learning-summary {
     gap: 20px;
@@ -1101,12 +1106,12 @@ body:has(.course-dialog[open]) {
   }
   .mobile-purchase-bar small {
     display: block;
-    color: #617553;
+    color: #4e5e42;
     font-size: 8px;
     letter-spacing: .08em;
   }
   .mobile-purchase-bar strong {
-    color: #344e29;
+    color: #2a3e21;
     font-size: 20px;
     font-weight: 500;
   }

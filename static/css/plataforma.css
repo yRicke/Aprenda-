@@ -1,12 +1,14 @@
 :root {
   color-scheme: light;
-  --paper: #faf9f6;
-  --ink: #252a27;
-  --muted: #666d61;
-  --line: #e1e2da;
-  --accent: #e78358;
-  --accent-hover: #ef946e;
+  --paper: #f0f3ef;
+  --ink: #13231b;
+  --muted: #425247;
+  --line: #bec8bd;
+  --accent: #b8451d;
+  --accent-hover: #923415;
   --ease: cubic-bezier(.2, 0, 0, 1);
+  --page-gutter: 24px;
+  --content-max: 1920px;
 }
 
 * {
@@ -55,7 +57,7 @@ button, .button {
   border: 1px solid transparent;
   border-radius: 5px;
   background: var(--accent);
-  color: #242820;
+  color: #ffffff;
   font-size: 14px;
   font-weight: 700;
   line-height: 1.45;
@@ -83,14 +85,14 @@ button[hidden] {
 }
 
 .secondary {
-  background: transparent;
-  border-color: #b8bcb1;
+  background: #ffffff;
+  border-color: #849680;
   color: var(--ink);
 }
 
 .secondary:hover {
-  background: #efefe9;
-  border-color: #838b7e;
+  background: #e6edde;
+  border-color: #526b4b;
 }
 
 .danger {
@@ -121,7 +123,7 @@ button[hidden] {
 h1, h2, h3 {
   margin: 0 0 16px;
   line-height: 1.18;
-  font-weight: 600;
+  font-weight: 650;
   letter-spacing: -.04em;
 }
 
@@ -167,7 +169,8 @@ summary::-webkit-details-marker {
 }
 
 .container {
-  width: min(1280px, calc(100% - 80px));
+  width: calc(100% - var(--page-gutter) - var(--page-gutter));
+  max-width: var(--content-max);
   margin-inline: auto;
 }
 
@@ -197,13 +200,13 @@ main.container {
 }
 
 .heading-dot {
-  color: #c96e47;
+  color: var(--accent);
 }
 
 .back {
   display: inline-block;
   margin-bottom: 34px;
-  color: #646a61;
+  color: #50554e;
   font-size: 13px;
   text-decoration: none;
 }
@@ -300,10 +303,10 @@ main.container {
   grid-template-columns: auto minmax(180px, 1fr) auto auto;
   align-items: center;
   gap: 30px;
-  max-width: 1440px;
+  max-width: calc(var(--content-max) + var(--page-gutter) + var(--page-gutter));
   min-height: 90px;
   margin: auto;
-  padding: 18px 40px;
+  padding: 18px var(--page-gutter);
 }
 
 .brand {
@@ -317,7 +320,7 @@ main.container {
 
 .brand span {
   display: inline-block;
-  color: #db744d;
+  color: var(--accent);
   font-size: 36px;
   font-weight: 500;
   transform: translateY(1px);
@@ -333,7 +336,7 @@ main.container {
   padding: 0 16px;
   border: 1px solid var(--line);
   border-radius: 5px;
-  background: #f6f6f2;
+  background: #edf1eb;
 }
 
 .header-search:focus-within {
@@ -357,7 +360,7 @@ main.container {
 }
 
 .header-search input::placeholder {
-  color: #6b6c65;
+  color: #565651;
 }
 
 .search-button {
@@ -429,7 +432,7 @@ main.container {
   height: 39px;
   border-radius: 50%;
   background: #e5eadf;
-  color: #45563e;
+  color: #374532;
   font-size: 15px;
   font-weight: 600;
 }
@@ -487,6 +490,7 @@ main.container {
   font-weight: 500;
   text-align: left;
   text-decoration: none;
+  color: var(--ink);
 }
 
 .menu-content > a:hover, .menu-logout:hover {
@@ -556,22 +560,23 @@ main.container {
 
 .hero-copy h1 {
   margin-bottom: 24px;
-  font-family: 'Instrument Serif', serif;
-  font-size: clamp(54px, 6.8vw, 92px);
-  font-weight: 400;
-  line-height: .96;
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(50px, 5.6vw, 80px);
+  font-weight: 700;
+  line-height: 1.04;
   letter-spacing: -.035em;
 }
 
 .hero-copy h1 em {
-  color: #bd6542;
-  font-weight: 400;
+  color: var(--accent);
+  font-weight: 700;
+  font-style: normal;
 }
 
 .hero-copy p {
-  max-width: 340px;
+  max-width: 460px;
   margin-bottom: 30px;
-  color: #5e6457;
+  color: #4b5046;
   font-size: 15px;
   line-height: 1.8;
 }
@@ -596,7 +601,7 @@ main.container {
   justify-content: center;
   width: 28px;
   height: 28px;
-  color: #646b58;
+  color: #505646;
   font-size: 24px;
   line-height: 1;
 }
@@ -671,7 +676,7 @@ main.container {
 }
 
 .course-card:hover {
-  border-color: #acb3a3;
+  border-color: #59754d;
 }
 
 .course-cover {
@@ -703,13 +708,13 @@ main.container {
   display: flex;
   gap: 9px;
   margin-bottom: 14px;
-  color: #676c60;
+  color: #52564d;
   font-size: 11px;
 }
 
 .course-meta span + span::before {
   margin-right: 9px;
-  color: #686c64;
+  color: #535650;
   content: '·';
 }
 
@@ -731,13 +736,13 @@ main.container {
 
 .course-teacher {
   margin-bottom: 18px;
-  color: #686b62;
+  color: #53564e;
   font-size: 12px;
 }
 
 .course-description {
   margin-bottom: 26px;
-  color: #686d62;
+  color: #53574e;
   font-size: 13px;
   line-height: 1.85;
 }
@@ -763,7 +768,7 @@ main.container {
 .card-bottom small {
   display: block;
   margin-top: 5px;
-  color: #686c61;
+  color: #53564e;
   font-size: 10px;
 }
 
@@ -837,9 +842,9 @@ main.container {
 }
 
 .teach-panel h2 {
-  font-family: 'Instrument Serif', serif;
-  font-size: 41px;
-  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 34px;
+  font-weight: 600;
   line-height: 1.1;
   letter-spacing: -.025em;
 }
@@ -847,7 +852,7 @@ main.container {
 .teach-panel p:last-child {
   max-width: 440px;
   margin-bottom: 0;
-  color: #676b60;
+  color: #52564d;
   font-size: 13px;
 }
 
@@ -881,7 +886,7 @@ main.container {
   border: 1px solid #d9decf;
   border-radius: 50%;
   background: #f0f2e9;
-  color: #626c54;
+  color: #4e5643;
   font-size: 32px;
 }
 
@@ -899,10 +904,10 @@ main.container {
 
 .course-intro h1 {
   margin-bottom: 28px;
-  font-family: 'Instrument Serif', serif;
-  font-size: clamp(40px, 4.6vw, 62px);
-  font-weight: 400;
-  line-height: 1.03;
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(34px, 4vw, 54px);
+  font-weight: 700;
+  line-height: 1.12;
   letter-spacing: -.025em;
 }
 
@@ -911,12 +916,12 @@ main.container {
   align-items: center;
   gap: 12px;
   margin-bottom: 28px;
-  color: #666a61;
+  color: #52554e;
   font-size: 12px;
 }
 
 .teacher-line strong {
-  color: #394431;
+  color: #2e3627;
   font-weight: 500;
 }
 
@@ -930,7 +935,7 @@ main.container {
 }
 
 .course-intro .prose {
-  color: #626c5a;
+  color: #4e5648;
   font-size: 15px;
 }
 
@@ -970,7 +975,7 @@ main.container {
   padding: 22px 0 0;
   border-top: 1px solid var(--line);
   list-style: none;
-  color: #606d57;
+  color: #4d5746;
   font-size: 12px;
 }
 
@@ -980,7 +985,7 @@ main.container {
 
 .purchase-note {
   margin: 0;
-  color: #696c64;
+  color: #545650;
   font-size: 11px;
   line-height: 1.85;
 }
@@ -1010,16 +1015,16 @@ main.container {
 .module-accordion > summary small {
   display: block;
   margin-top: 6px;
-  color: #686c62;
+  color: #53564e;
   font-size: 11px;
   font-weight: 400;
 }
 
 .module-number {
-  color: #656b5c;
-  font-family: 'Instrument Serif', serif;
-  font-size: 26px;
-  font-weight: 400;
+  color: #51564a;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .accordion-icon {
@@ -1070,7 +1075,7 @@ details[open] > summary .accordion-icon::after {
 .lesson-list small {
   display: block;
   margin-top: 4px;
-  color: #696d60;
+  color: #54574d;
 }
 
 .syllabus .lesson-list {
@@ -1095,7 +1100,7 @@ details[open] > summary .accordion-icon::after {
   justify-content: center;
   width: 15px;
   height: 18px;
-  color: #686d5c;
+  color: #53574a;
   font-size: 11px;
 }
 
@@ -1163,7 +1168,7 @@ details[open] > summary .accordion-icon::after {
   height: 21px;
   border-radius: 3px;
   background: #ebeee2;
-  color: #656d55;
+  color: #515744;
   font-size: 10px;
   font-weight: 500;
 }
@@ -1187,7 +1192,7 @@ details[open] > summary .accordion-icon::after {
 
 .study-status.complete {
   background: #eaf0e5;
-  color: #5a6e48;
+  color: #48583a;
 }
 
 .study-card .card-bottom {
@@ -1207,7 +1212,7 @@ details[open] > summary .accordion-icon::after {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  color: #666d5a;
+  color: #525748;
   font-size: 11px;
 }
 
@@ -1225,8 +1230,8 @@ progress {
   border: 0;
   border-radius: 2px;
   background: #e8ebdf;
-  color: #606d51;
-  accent-color: #7f926b;
+  color: #4d5741;
+  accent-color: #447035;
 }
 
 progress::-webkit-progress-bar {
@@ -1236,28 +1241,28 @@ progress::-webkit-progress-bar {
 
 progress::-webkit-progress-value {
   border-radius: 2px;
-  background: #7f926b;
+  background: #447035;
 }
 
 progress::-moz-progress-bar {
   border-radius: 2px;
-  background: #7f926b;
+  background: #447035;
 }
 
 .study-header {
   margin-bottom: 42px;
   padding: 38px 42px;
   border-radius: 7px;
-  background: #2f3d32;
+  background: #1a3327;
   color: #f2f0e7;
 }
 
 .study-header h1 {
   max-width: 800px;
   margin-bottom: 18px;
-  font-family: 'Instrument Serif', serif;
-  font-size: clamp(34px, 4vw, 55px);
-  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(30px, 3.4vw, 46px);
+  font-weight: 600;
 }
 
 .study-header p {
@@ -1288,7 +1293,7 @@ progress::-moz-progress-bar {
 }
 
 .study-lessons a small {
-  color: #666c5c;
+  color: #52564a;
   font-size: 10px;
 }
 
@@ -1296,29 +1301,29 @@ progress::-moz-progress-bar {
   padding: 4px 9px;
   border-radius: 3px;
   background: #eeeee9;
-  color: #696c64;
+  color: #545650;
   font-size: 10px;
   white-space: nowrap;
 }
 
 .status.done {
   background: #eaf0e3;
-  color: #606f4b;
+  color: #4d593c;
 }
 
 .progress-card {
   position: sticky;
   top: 118px;
   padding: 30px;
-  background: #f0f1e9;
-  border-color: #e2e5d8;
+  background: #e4ebdf;
+  border-color: #b7c6ad;
 }
 
 .progress-card h2 {
   margin-bottom: 30px;
-  font-family: 'Instrument Serif', serif;
-  font-size: 31px;
-  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
 }
 
 .progress-card .eyebrow {
@@ -1327,7 +1332,7 @@ progress::-moz-progress-bar {
 
 .progress-card p:not(.eyebrow) {
   font-size: 12px;
-  color: #666d59;
+  color: #525747;
 }
 
 .progress-card hr {
@@ -1343,7 +1348,7 @@ progress::-moz-progress-bar {
   justify-content: space-between;
   gap: 12px;
   align-items: start;
-  color: #676a5f;
+  color: #52554c;
   font-size: 11px;
 }
 
@@ -1463,7 +1468,7 @@ progress::-moz-progress-bar {
 }
 
 .lesson-text {
-  color: #626e57;
+  color: #4e5846;
   line-height: 1.95;
 }
 
@@ -1472,7 +1477,7 @@ progress::-moz-progress-bar {
 }
 
 .lesson-text p:first-child {
-  color: #49533f;
+  color: #3a4232;
 }
 
 .lesson-actions {
@@ -1501,13 +1506,13 @@ progress::-moz-progress-bar {
   flex-wrap: wrap;
   gap: 12px;
   margin: 13px 0 24px;
-  color: #666f59;
+  color: #525947;
   font-size: 11px;
 }
 
 .quiz-intro {
   max-width: 540px;
-  color: #656d5b;
+  color: #515749;
   font-size: 13px;
 }
 
@@ -1521,13 +1526,13 @@ progress::-moz-progress-bar {
 .quiz-question legend {
   max-width: 100%;
   padding: 0 7px;
-  color: #536047;
+  color: #424d39;
   font-size: 14px;
   font-weight: 500;
 }
 
 .quiz-question legend span {
-  color: #626c54;
+  color: #4e5643;
 }
 
 .quiz-question div label {
@@ -1535,7 +1540,7 @@ progress::-moz-progress-bar {
   align-items: center;
   gap: 12px;
   padding: 9px 4px;
-  color: #636d54;
+  color: #4f5743;
   font-size: 13px;
   font-weight: 400;
   cursor: pointer;
@@ -1564,7 +1569,7 @@ progress::-moz-progress-bar {
 
 .attempts .lesson-list strong {
   font-weight: 500;
-  color: #5d6d4e;
+  color: #4a573e;
 }
 
 .classroom-sidebar {
@@ -1599,7 +1604,7 @@ progress::-moz-progress-bar {
   justify-content: space-between;
   gap: 18px;
   padding: 20px 24px;
-  color: #616d55;
+  color: #4e5744;
   font-size: 12px;
   font-weight: 600;
 }
@@ -1620,7 +1625,7 @@ progress::-moz-progress-bar {
   gap: 12px;
   padding: 14px 13px;
   border-radius: 4px;
-  color: #646e5b;
+  color: #505849;
   font-size: 12px;
   line-height: 1.5;
   text-decoration: none;
@@ -1629,7 +1634,7 @@ progress::-moz-progress-bar {
 .sidebar-module a small {
   display: block;
   margin-top: 5px;
-  color: #676d5c;
+  color: #52574a;
   font-size: 10px;
 }
 
@@ -1639,7 +1644,7 @@ progress::-moz-progress-bar {
 
 .sidebar-module a[aria-current] {
   background: #edf2e5;
-  color: #516941;
+  color: #415434;
   font-weight: 600;
 }
 
@@ -1652,21 +1657,21 @@ progress::-moz-progress-bar {
   height: 20px;
   border: 1px solid #d5ddc9;
   border-radius: 50%;
-  color: #646c59;
+  color: #505647;
   font-size: 9px;
 }
 
 .lesson-check.checked {
   border-color: transparent;
   background: #dce7ce;
-  color: #5c6d4b;
+  color: #4a573c;
 }
 
 .sidebar-back {
   display: block;
   padding: 20px 24px;
   border-top: 1px solid #e6ebde;
-  color: #627054;
+  color: #4e5a43;
   font-size: 11px;
   text-decoration: none;
 }
@@ -1685,7 +1690,7 @@ progress::-moz-progress-bar {
   border: 1px solid #d0d6c5;
   border-radius: 4px;
   background: white;
-  color: #526047;
+  color: #424d39;
   font-size: 14px;
   transition: border-color 120ms var(--ease);
 }
@@ -1706,7 +1711,7 @@ textarea {
 }
 
 label {
-  color: #626e56;
+  color: #4e5845;
   font-size: 12px;
   font-weight: 500;
 }
@@ -1743,7 +1748,7 @@ form p {
 }
 
 .auth-page main.container {
-  max-width: 1100px;
+  max-width: 1480px;
   padding-top: 42px;
   padding-bottom: 64px;
 }
@@ -1784,9 +1789,9 @@ form p {
 
 .auth-card h1 {
   margin-bottom: 18px;
-  font-family: 'Instrument Serif', serif;
-  font-size: 52px;
-  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 44px;
+  font-weight: 600;
   line-height: 1.03;
   letter-spacing: -.025em;
 }
@@ -1802,7 +1807,7 @@ form p {
 
 .auth-card form ul:not(.errorlist) {
   padding-left: 17px;
-  color: #646c58;
+  color: #505646;
   font-size: 11px;
 }
 
@@ -1815,13 +1820,13 @@ form p {
 .auth-switch {
   margin-top: 30px;
   margin-bottom: 0;
-  color: #646b5a;
+  color: #505648;
   font-size: 12px;
 }
 
 .auth-switch a {
   margin-left: 4px;
-  color: #50693e;
+  color: #405432;
   font-weight: 600;
 }
 
@@ -1842,7 +1847,7 @@ form p {
   padding: 8px;
   border: 0;
   background: transparent;
-  color: #646c58;
+  color: #505646;
   font-size: 10px;
   font-weight: 500;
 }
@@ -1954,7 +1959,7 @@ form p {
   margin: 0 0 22px;
   padding-top: 22px;
   border-top: 1px solid var(--line);
-  color: #646c59;
+  color: #505647;
   font-size: 12px;
 }
 
@@ -1972,7 +1977,7 @@ form p {
   margin-top: 4px;
   padding-top: 20px;
   border-top: 1px solid var(--line);
-  color: #556845;
+  color: #445337;
   font-size: 20px;
   font-weight: 600;
   letter-spacing: -.03em;
@@ -1989,13 +1994,13 @@ form p {
   border: 1px solid #d3ddca;
   border-radius: 5px;
   background: #f0f4eb;
-  color: #5c6e51;
+  color: #4a5841;
   font-size: 13px;
 }
 
 .message.success {
   background: #eef4e8;
-  color: #5a714a;
+  color: #485a3b;
 }
 
 .message.error {
@@ -2020,9 +2025,9 @@ form p {
 }
 
 .certificate h1 {
-  font-family: 'Instrument Serif', serif;
-  font-size: 50px;
-  font-weight: 400;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 40px;
+  font-weight: 600;
 }
 
 .certificate h2 {
@@ -2033,18 +2038,18 @@ form p {
 
 .certificate h3 {
   margin: 28px 0;
-  color: #626c52;
+  color: #4e5642;
   font-size: 26px;
 }
 
 .certificate p {
-  color: #686d5e;
+  color: #53574b;
   font-size: 13px;
 }
 
 .certificate .certificate-brand {
   margin-bottom: 38px;
-  color: #636d51;
+  color: #4f5741;
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -.06em;
@@ -2062,7 +2067,7 @@ form p {
 
 .site-footer {
   padding: 44px 0;
-  background: #272f27;
+  background: #15251b;
   color: #bcc4b0;
 }
 
@@ -2080,6 +2085,7 @@ form p {
 
 .site-footer .brand span {
   font-size: 31px;
+  color: #f2a377;
 }
 
 .site-footer p {
@@ -2141,21 +2147,21 @@ form p {
 }
 
 @media (max-width: 1100px) {
+  :root {
+    --page-gutter: 20px;
+  }
   .header-inner {
     gap: 22px;
-    padding-inline: 30px;
+    padding-inline: var(--page-gutter);
   }
   .desktop-nav {
     gap: 18px;
-  }
-  .container {
-    width: calc(100% - 60px);
   }
   .hero-copy {
     padding: 26px 0;
   }
   .hero-copy h1 {
-    font-size: 72px;
+    font-size: 64px;
   }
   .catalog-hero {
     min-height: 460px;
@@ -2212,7 +2218,7 @@ form p {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .hero-copy h1 {
-    font-size: 60px;
+    font-size: 54px;
   }
   .hero-copy p {
     font-size: 13px;
@@ -2282,14 +2288,14 @@ form p {
 }
 
 @media (max-width: 700px) {
+  :root {
+    --page-gutter: 14px;
+  }
   .site-header {
     position: relative;
   }
   html {
     scroll-padding-top: 24px;
-  }
-  .container {
-    width: calc(100% - 36px);
   }
   main.container {
     padding-top: 26px;
@@ -2298,7 +2304,7 @@ form p {
   .header-inner {
     grid-template-columns: 1fr auto;
     gap: 16px;
-    padding: 16px 18px;
+    padding: 16px var(--page-gutter);
   }
   .brand {
     font-size: 28px;
@@ -2334,7 +2340,7 @@ form p {
     padding: 10px 0;
   }
   .hero-copy h1 {
-    font-size: clamp(49px, 9vw, 67px);
+    font-size: clamp(38px, 8vw, 54px);
   }
   .hero-copy p {
     max-width: 340px;
@@ -2398,7 +2404,7 @@ form p {
     padding: 30px;
   }
   .teach-panel h2 {
-    font-size: 34px;
+    font-size: 28px;
   }
   .course-detail-grid {
     grid-template-columns: 1fr;
